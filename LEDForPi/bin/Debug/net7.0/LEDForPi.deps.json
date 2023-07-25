@@ -1,0 +1,73 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "LEDForPi/1.0.0": {
+        "dependencies": {
+          "NetCoreAudio": "1.7.0",
+          "System.Device.Gpio": "3.0.0",
+          "kenssamson.rpi-ws281x-csharp": "1.1.0"
+        },
+        "runtime": {
+          "LEDForPi.dll": {}
+        }
+      },
+      "kenssamson.rpi-ws281x-csharp/1.1.0": {
+        "runtime": {
+          "lib/netstandard2.0/rpi_ws281x.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "NetCoreAudio/1.7.0": {
+        "runtime": {
+          "lib/netstandard2.0/NetCoreAudio.dll": {
+            "assemblyVersion": "1.7.0.0",
+            "fileVersion": "1.7.0.0"
+          }
+        }
+      },
+      "System.Device.Gpio/3.0.0": {
+        "runtime": {
+          "lib/net6.0/System.Device.Gpio.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.23.36310"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "LEDForPi/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "kenssamson.rpi-ws281x-csharp/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9r2JWdVDgLQsfDg/wjaRdTturOBg7wLF6eMhJWph4EWjxl6ZLTZH+EQyOQBymljBPwjzEKdi40GP+InRCPek5w==",
+      "path": "kenssamson.rpi-ws281x-csharp/1.1.0",
+      "hashPath": "kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512"
+    },
+    "NetCoreAudio/1.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5pFxP/gwY31QVTVoh+3QhnenyHiP5uyPEy/vG6MArmTqdnZc8mMxwMWemsoRKMNGcC/o3/lW/H/YBX9dgZy/nA==",
+      "path": "netcoreaudio/1.7.0",
+      "hashPath": "netcoreaudio.1.7.0.nupkg.sha512"
+    },
+    "System.Device.Gpio/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tU+rRrRlAiFj7PKcrr1hjw9QSxBZ2B0w8Pse05nUi0M85p8kSkAJdJExqjd06iW4K15dNjLkR/RO1NMalCRq+Q==",
+      "path": "system.device.gpio/3.0.0",
+      "hashPath": "system.device.gpio.3.0.0.nupkg.sha512"
+    }
+  }
+}

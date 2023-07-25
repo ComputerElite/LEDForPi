@@ -1,0 +1,166 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0": {
+      "kenssamson.rpi-ws281x-csharp/1.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/rpi_ws281x.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/rpi_ws281x.dll": {}
+        }
+      },
+      "NetCoreAudio/1.7.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/NetCoreAudio.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetCoreAudio.dll": {}
+        }
+      },
+      "System.Device.Gpio/3.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/System.Device.Gpio.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/System.Device.Gpio.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net5.0/System.Device.Gpio.targets": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "kenssamson.rpi-ws281x-csharp/1.1.0": {
+      "sha512": "9r2JWdVDgLQsfDg/wjaRdTturOBg7wLF6eMhJWph4EWjxl6ZLTZH+EQyOQBymljBPwjzEKdi40GP+InRCPek5w==",
+      "type": "package",
+      "path": "kenssamson.rpi-ws281x-csharp/1.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
+        "kenssamson.rpi-ws281x-csharp.nuspec",
+        "lib/netstandard2.0/rpi_ws281x.dll"
+      ]
+    },
+    "NetCoreAudio/1.7.0": {
+      "sha512": "5pFxP/gwY31QVTVoh+3QhnenyHiP5uyPEy/vG6MArmTqdnZc8mMxwMWemsoRKMNGcC/o3/lW/H/YBX9dgZy/nA==",
+      "type": "package",
+      "path": "netcoreaudio/1.7.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "icon.jpg",
+        "lib/netstandard2.0/NetCoreAudio.dll",
+        "netcoreaudio.1.7.0.nupkg.sha512",
+        "netcoreaudio.nuspec"
+      ]
+    },
+    "System.Device.Gpio/3.0.0": {
+      "sha512": "tU+rRrRlAiFj7PKcrr1hjw9QSxBZ2B0w8Pse05nUi0M85p8kSkAJdJExqjd06iW4K15dNjLkR/RO1NMalCRq+Q==",
+      "type": "package",
+      "path": "system.device.gpio/3.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net5.0/System.Device.Gpio.targets",
+        "lib/net6.0-windows10.0.17763/System.Device.Gpio.dll",
+        "lib/net6.0-windows10.0.17763/System.Device.Gpio.xml",
+        "lib/net6.0/System.Device.Gpio.dll",
+        "lib/net6.0/System.Device.Gpio.xml",
+        "lib/netstandard2.0/System.Device.Gpio.dll",
+        "lib/netstandard2.0/System.Device.Gpio.xml",
+        "system.device.gpio.3.0.0.nupkg.sha512",
+        "system.device.gpio.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0": [
+      "NetCoreAudio >= 1.7.0",
+      "System.Device.Gpio >= 3.0.0",
+      "kenssamson.rpi-ws281x-csharp >= 1.1.0"
+    ]
+  },
+  "packageFolders": {
+    "/home/computerelite/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj",
+      "projectName": "LEDForPi",
+      "projectPath": "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj",
+      "packagesPath": "/home/computerelite/.nuget/packages/",
+      "outputPath": "/home/computerelite/rider/LEDForPi/LEDForPi/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/home/computerelite/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0": {
+        "targetAlias": "net7.0",
+        "dependencies": {
+          "NetCoreAudio": {
+            "target": "Package",
+            "version": "[1.7.0, )"
+          },
+          "System.Device.Gpio": {
+            "target": "Package",
+            "version": "[3.0.0, )"
+          },
+          "kenssamson.rpi-ws281x-csharp": {
+            "target": "Package",
+            "version": "[1.1.0, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/7.0.107/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

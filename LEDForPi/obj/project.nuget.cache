@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "/rFdOWYBUAmrhJVN7WwjiljUbJM8b8EVSofygHeVQhoT/MAM4Z8iEj3GUdXN4CuhleJYRsjSpX8e+lHG7jD9Uw==",
+  "success": true,
+  "projectFilePath": "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj",
+  "expectedPackageFiles": [
+    "/home/computerelite/.nuget/packages/kenssamson.rpi-ws281x-csharp/1.1.0/kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/netcoreaudio/1.7.0/netcoreaudio.1.7.0.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/system.device.gpio/3.0.0/system.device.gpio.3.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
