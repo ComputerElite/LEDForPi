@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using ComputerUtils.Logging;
 
 namespace LEDForPi;
 
@@ -12,6 +13,7 @@ public class RBSongPlayer
     public static float shipLocation = 0;
     public static DateTime songStartTime = DateTime.Now;
     public static int currentSongId = 0;
+    public static int bgColor = 0;
     public static double lastSongShootTime = 0;
     public static double elapsedSeconds => (DateTime.Now - songStartTime).TotalSeconds;
     public static List<int> hitTargets = new List<int>();
@@ -56,7 +58,7 @@ public class RBSongPlayer
         {
             if (thisPlayId != currentSongId) return;
             float songTime = Convert.ToSingle(elapsedSeconds);
-            w.SetAllLED(0x000000); // turn off all leds
+            w.SetAllLED(bgColor); // turn off all leds
             // Spawn targets
             // Instantiate all song cubes to instantiate
             if (map.targets.Count > 0)
@@ -146,5 +148,9 @@ public class RBSongPlayer
         return lerpPositionX;
     }
 
-    
+
+    public static void SetBG(int rBg)
+    {
+        bgColor = rBg;
+    }
 }
