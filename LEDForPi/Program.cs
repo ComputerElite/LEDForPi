@@ -24,7 +24,6 @@ server.AddWSRoute("/", request =>
         case DataType.UPDATE:
             RBSongPlayer.SetSongTime(r.time);
             RBSongPlayer.SetShipPos(r.shipPos);
-            RBSongPlayer.SetBG(r.bg);
             break;
         case DataType.LASER_SHOT:
             RBSongPlayer.LaserShot();
@@ -38,6 +37,12 @@ server.AddRoute("POST", "/map", request =>
 {
     request.SendString("");
     RBSongPlayer.PlaySong(w, JsonSerializer.Deserialize<MapDifficulty>(request.bodyString));
+    return true;
+});
+server.AddRoute("POST", "/info", request =>
+{
+    request.SendString("");
+    RBSongPlayer.info = JsonSerializer.Deserialize<MapInfo>(request.bodyString);
     return true;
 });
 server.StartServer(14007);

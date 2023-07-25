@@ -21,46 +21,46 @@ public class StripWrapper
         rpi = new WS281x(settings);
     }
 
-    public void SetLED(int ledId, Color color)
+    public void SetLED(int ledId, System.Drawing.Color color)
     {
         controller.SetLED(ledId, color);
     }
 
     public void SetLED(int ledId, int r, int g, int b)
     {
-        controller.SetLED(ledId, Color.FromArgb(r, g, b));
+        controller.SetLED(ledId, System.Drawing.Color.FromArgb(r, g, b));
     }
     
     public void SetLED(int ledId, int rgb)
     {
-        Color c = GetColorFromRGB(rgb);
+        System.Drawing.Color c = GetColorFromRGB(rgb);
         controller.SetLED(ledId, c);
     }
     public void SetLED(int ledId, int rgb, double brightness)
     {
-        Color c = GetColorFromRGB(rgb);
-        c = Color.FromArgb((int)Math.Round(c.R * brightness), (int)Math.Round(c.G * brightness), (int)Math.Round(c.B * brightness));
+        System.Drawing.Color c = GetColorFromRGB(rgb);
+        c = System.Drawing.Color.FromArgb((int)Math.Round(c.R * brightness), (int)Math.Round(c.G * brightness), (int)Math.Round(c.B * brightness));
         controller.SetLED(ledId, c);
     }
 
-    public Color GetColorFromRGB(int rgb)
+    public System.Drawing.Color GetColorFromRGB(int rgb)
     {
-        return Color.FromArgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff);
+        return System.Drawing.Color.FromArgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff);
     }
     
-    public void SetAllLED(Color color)
+    public void SetAllLED(System.Drawing.Color color)
     {
         controller.SetAll(color);
     }
 
     public void SetAllLED(int r, int g, int b)
     {
-        controller.SetAll(Color.FromArgb(r, g, b));
+        controller.SetAll(System.Drawing.Color.FromArgb(r, g, b));
     }
     
     public void SetAllLED(int rgb)
     {
-        controller.SetAll(Color.FromArgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff));
+        controller.SetAll(System.Drawing.Color.FromArgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff));
     }
 
     public void Render()

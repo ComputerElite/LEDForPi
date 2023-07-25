@@ -6,6 +6,7 @@ public class TargetController
 
     public float instantiateTime;
     public int mySongPlayId = 0;
+    public bool missed = false;
     public TargetController(TargetData d, float songTime, int songPlayId)
     {
         data = d;
@@ -21,17 +22,57 @@ public class TargetController
     public bool Update(float songTime, StripWrapper stripWrapper, int currentSuggestedLED)
     {
         if(mySongPlayId != RBSongPlayer.currentSongId) return true;
+        
+        
+        float progress = -1 + (songTime - instantiateTime) / data.lifetime * 2;
+        
+        // Handle flash target type
+        if (data.type == TargetType.FLASH)
+        {
+            if (progress < 0) return false;
+            progress = 1 - progress;
+            double alpha = Math.Pow(progress, 5);
+            if (alpha > 1) alpha = 1;
+            RBSongPlayer.actualColor = Color.Lerp(RBSongPlayer.currentBgColor, RBSongPlayer.currentColor, Convert.ToSingle(alpha));
+            return false;
+        }
+        // Handle Color change target type
+        if (data.type == TargetType.COLORCHANGE)
+        {
+            Color newColor = data.power == -2 ? new Color(.78f, 0f, .12f) : RBSongPlayer.info.colors[data.power / 2];
+            Color newColorBg = data.power == -2 ? new Color(.13f, 0f, .02f) : RBSongPlayer.info.bgColors[data.power / 2];
+            if (progress >= 1)
+            {
+                RBSongPlayer.lastColor = newColor;
+                RBSongPlayer.currentColor = newColor;
+                RBSongPlayer.lastBgColor = newColorBg;
+                RBSongPlayer.currentBgColor = newColorBg;
+                return true;
+            }
+            if (progress < 0) return false;
+            float blend = CodeAnimationHelpers.EaseInOutCurve(progress);
+            RBSongPlayer.currentColor = Color.Lerp(RBSongPlayer.lastColor, newColor, blend);
+            RBSongPlayer.currentBgColor = Color.Lerp(RBSongPlayer.lastBgColor, newColorBg, blend);
+            return false;
+        }
         if (data.type != TargetType.NORMAL) return true;
         if (RBSongPlayer.hitTargets.Contains(data.index)) return true;
         
-        float progress = -1 + (songTime - instantiateTime) / data.lifetime * 2;
         if (progress > 1)
         {
             return true;
         }
 
+        missed = progress > 0;
+
         int led = Utils.LocationToLEDIndex(data.location, stripWrapper);
         int color = 0xFFFFFF;
+        // Check if we are the next target
+        bool anythingEarlier = RBSongPlayer.controllers.Where(x => !x.missed && x.data.type == TargetType.NORMAL).Any(x => x.data.index != data.index && x.data.time < data.time);
+        if (!anythingEarlier)
+        {
+            color = 0x00EEFF;
+        }
         if (progress > 0)
         {
             // Lerp between 0xFFFFFF and 0xFF0000
