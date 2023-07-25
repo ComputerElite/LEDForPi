@@ -16,6 +16,7 @@ public class RBSongPlayer
     public static int currentSongId = 0;
     public static int bgColor = 0;
     public static double lastSongShootTime = 0;
+    public static int laserShootLED = 0;
     public static double elapsedSeconds => (DateTime.Now - songStartTime).TotalSeconds;
     public static List<int> hitTargets = new List<int>();
     public static List<TargetController> controllers = new();
@@ -27,6 +28,7 @@ public class RBSongPlayer
     public static Color currentBgColor = new(0, 0, 0);
     public static Color lastBgColor = new(0, 0, 0);
     public static Color actualColor = new(0, 0, 0);
+    public static List<LaserShot> laserShots = new();
 
     public static void SetSongTime(float songTime)
     {
@@ -36,6 +38,11 @@ public class RBSongPlayer
     public static void LaserShot()
     {
         lastSongShootTime = elapsedSeconds;
+        laserShootLED = Utils.LocationToLEDIndex(shipLocation, w);
+        laserShots.Add(new LaserShot {
+            middleLED = laserShootLED,
+            shootTime = lastSongShootTime
+        });
     }
 
     public static void SetShipPos(float pos)
@@ -110,6 +117,16 @@ public class RBSongPlayer
     
             //UpdateSuggestedMovement(songTime);
             w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
+            
+            // Add 3 wide laser
+            for (int l = 0; l < laserShots.Count; l++)
+            {
+                if (laserShots[l].Update(w))
+                {
+                    laserShots.RemoveAt(l);
+                    l--;
+                }
+            } 
             // Update targets
             for (int i = 0; i < controllers.Count; i++)
             {
