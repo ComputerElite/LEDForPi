@@ -79,6 +79,9 @@ public class RBSongPlayer
         MapDifficulty map = new MapDifficulty(m);
         mapSortedByHitTime = new MapDifficulty(map);
         mapSortedByHitTime.targets = mapSortedByHitTime.targets.OrderBy(x => x.time).ToList();
+        
+        currentColor = GetColorAt(-9999f); // uses color index 0 of the map which should be the default rb color
+        currentBgColor = GetColorAt(-9999f, true);
 
         // Order by spawn order
         map.targets = map.targets.OrderBy(x => x.time).ToList();
