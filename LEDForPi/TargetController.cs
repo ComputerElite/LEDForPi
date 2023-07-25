@@ -5,16 +5,25 @@ public class TargetController
     public TargetData data;
 
     public float instantiateTime;
-    public TargetController(TargetData d, float songTime)
+    public int mySongPlayId = 0;
+    public TargetController(TargetData d, float songTime, int songPlayId)
     {
         data = d;
+        mySongPlayId = songPlayId;
         instantiateTime = songTime;
     }
 
 
+    /// <summary>
+    /// Does everything to display the LED
+    /// </summary>
+    /// <returns>Whether to destroy this controller or not</returns>
     public bool Update(float songTime, StripWrapper stripWrapper, int currentSuggestedLED)
     {
+        if(mySongPlayId != RBSongPlayer.currentSongId) return true;
         if (data.type != TargetType.NORMAL) return true;
+        if (RBSongPlayer.hitTargets.Contains(data.index)) return true;
+        
         float progress = -1 + (songTime - instantiateTime) / data.lifetime * 2;
         if (progress > 1)
         {
@@ -33,7 +42,13 @@ public class TargetController
         double brightness = 0;
         if(progress < 0) brightness = 1 + progress;
         else brightness = 1 - progress;
-        brightness = brightness * brightness;
+        brightness *= brightness;
+        if (led == Utils.LocationToLEDIndex(RBSongPlayer.shipLocation, stripWrapper))
+        {
+            if (songTime % .05f < .025f)
+                stripWrapper.SetLED(led, currentSuggestedLED == led ? 0xFF00FF : color, brightness);
+            else return false;
+        }
         stripWrapper.SetLED(led, currentSuggestedLED == led ? 0xFF00FF : color, brightness);
         return false;
     }

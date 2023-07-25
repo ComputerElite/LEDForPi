@@ -9,8 +9,7 @@ public class TargetData
     public float shootTime { get; set; } = 0.0f; // -1.0 to 1.0 within lifetime
     public float lifetime { get; set; } = 2.0f; // Amount of time the target is on screen. Shoot time will be at half lifetime
     public float size { get; set; } = 0.5f; // size of target
-    [NonSerialized]
-    public int index = 0; // auto assigned
+    public int index { get; set; } = 0; // received by server, index of target in map
 	[NonSerialized]
 	public int gameData = 0; // auto assigned
 	public int power { get; set; } = 2; // for animation
@@ -39,6 +38,7 @@ public class TargetData
         this.size = toCopy.size;
         this.power = toCopy.power;
         this.type = toCopy.type;
+        this.index = toCopy.index;
     }
 	
     public TargetData() { }

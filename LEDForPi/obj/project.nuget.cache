@@ -1,12 +1,50 @@
 {
   "version": 2,
-  "dgSpecHash": "/rFdOWYBUAmrhJVN7WwjiljUbJM8b8EVSofygHeVQhoT/MAM4Z8iEj3GUdXN4CuhleJYRsjSpX8e+lHG7jD9Uw==",
+  "dgSpecHash": "aSE/QRkOeY10/8y9tCghpFKx0cjwyszGQz7WO2FVnFJPihx7aChZa95+unfwPTNrZsOQtxS0hawHNgyKKBBxqw==",
   "success": true,
   "projectFilePath": "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj",
   "expectedPackageFiles": [
+    "/home/computerelite/.nuget/packages/aforge/2.2.5/aforge.2.2.5.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/aforge.video/2.2.5/aforge.video.2.2.5.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/aforge.video.directshow/2.2.5/aforge.video.directshow.2.2.5.nupkg.sha512",
     "/home/computerelite/.nuget/packages/kenssamson.rpi-ws281x-csharp/1.1.0/kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/mimetypemapofficial/1.0.17/mimetypemapofficial.1.0.17.nupkg.sha512",
     "/home/computerelite/.nuget/packages/netcoreaudio/1.7.0/netcoreaudio.1.7.0.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/system.device.gpio/3.0.0/system.device.gpio.3.0.0.nupkg.sha512"
+    "/home/computerelite/.nuget/packages/qrcoder/1.4.3/qrcoder.1.4.3.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/system.device.gpio/3.0.0/system.device.gpio.3.0.0.nupkg.sha512",
+    "/home/computerelite/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'AForge 2.2.5' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "AForge",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'AForge.Video 2.2.5' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "AForge.Video",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'AForge.Video.DirectShow 2.2.5' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "AForge.Video.DirectShow",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    }
+  ]
 }

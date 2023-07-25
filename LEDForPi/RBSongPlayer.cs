@@ -9,21 +9,52 @@ public class RBSongPlayer
     public static MapDifficulty mapSortedByHitTime = new MapDifficulty();
     public static int currentSuggestedLED = 0;
     public static StripWrapper w = new StripWrapper();
+    public static float shipLocation = 0;
+    public static DateTime songStartTime = DateTime.Now;
+    public static int currentSongId = 0;
+    public static double lastSongShootTime = 0;
+    public static double elapsedSeconds => (DateTime.Now - songStartTime).TotalSeconds;
+    public static List<int> hitTargets = new List<int>();
+
+    public static void SetSongTime(float songTime)
+    {
+        songStartTime = DateTime.Now - TimeSpan.FromSeconds(songTime);
+    }
+
+    public static void LaserShot()
+    {
+        lastSongShootTime = elapsedSeconds;
+    }
+
+    public static void SetShipPos(float pos)
+    {
+        shipLocation = pos;
+    }
+
+    public static void TargetHit(int index)
+    {
+        hitTargets.Add(index);
+    }
+    
     public static void PlaySong(StripWrapper strip, MapDifficulty m)
     {
+        currentSongId++;
+        hitTargets = new List<int>();
+        int thisPlayId = currentSongId + 0;
         w = strip;
+        songStartTime = DateTime.Now + TimeSpan.FromSeconds(3);
         List<TargetController> controllers = new();
-        DateTime songStartTime = DateTime.Now;
         MapDifficulty map = new MapDifficulty(m);
         mapSortedByHitTime = new MapDifficulty(map);
+        mapSortedByHitTime.targets = mapSortedByHitTime.targets.OrderBy(x => x.time).ToList();
 
-// Order by spawn order
-        map.targets = map.targets.OrderBy(x => x.time - x.lifetime / 2).ToList();
+        // Order by spawn order
         map.targets = map.targets.OrderBy(x => x.time).ToList();
+        map.targets = map.targets.OrderBy(x => x.time - x.lifetime / 2).ToList();
 
         while (true)
         {
-            double elapsedSeconds = (DateTime.Now - songStartTime).TotalSeconds;
+            if (thisPlayId != currentSongId) return;
             float songTime = Convert.ToSingle(elapsedSeconds);
             w.SetAllLED(0x000000); // turn off all leds
             // Spawn targets
@@ -32,13 +63,18 @@ public class RBSongPlayer
             {
                 while (songTime >= map.targets[0].time - map.targets[0].lifetime / 2)
                 {
-                    controllers.Add(new TargetController(map.targets[0], songTime));
+                    controllers.Add(new TargetController(map.targets[0], songTime, thisPlayId));
                     map.targets.RemoveAt(0);
                     if (map.targets.Count <= 0) break;
                 }
             }
+            
+            // Show ship location
+            double timeSinceLastShoot = elapsedSeconds - lastSongShootTime;
+            double brightness = Math.Clamp(1 - timeSinceLastShoot * timeSinceLastShoot * 4f, .3, 1);
     
-            UpdateSuggestedMovement(songTime);
+            //UpdateSuggestedMovement(songTime);
+            w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
             // Update targets
             for (int i = 0; i < controllers.Count; i++)
             {
@@ -56,8 +92,6 @@ public class RBSongPlayer
         }
     }
     
-    
-
     public static void UpdateSuggestedMovement(float time)
     {
         float pos = GetSuggestedPositionForTime(time);

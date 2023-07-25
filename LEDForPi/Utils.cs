@@ -5,7 +5,7 @@ public class Utils
 
     public static int LocationToLEDIndex(float location, StripWrapper stripWrapper)
     {
-        return stripWrapper.LEDCount - (int)Math.Round((location + 1) / 2f * stripWrapper.LEDCount);
+        return (stripWrapper.LEDCount - 1) - (int)((location + 1) * (stripWrapper.LEDCount - 1) / 2f);
     }
     
     public static float Lerp(float a, float b, float t)
