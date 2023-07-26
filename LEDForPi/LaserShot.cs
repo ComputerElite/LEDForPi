@@ -8,14 +8,16 @@ public class LaserShot
     public bool Update(StripWrapper w)
     {
         double timeSinceLastShoot = RBSongPlayer.elapsedSeconds - shootTime;
-        double laserBrightness = Math.Clamp(1 - timeSinceLastShoot * timeSinceLastShoot * 4f, 0, 1);
+        if(timeSinceLastShoot > 1) return true;
+        
+        double laserBrightness = Math.Clamp(Math.Pow(1 - timeSinceLastShoot, 8), 0, 1);
+        int color = Color.Lerp(new Color(1f, 1f, 1f) * (float)laserBrightness, RBSongPlayer.actualColor, laserBrightness < 0.33f ? 1 - (float)laserBrightness * 3 : 0).ToInt();
         if (laserBrightness > 0)
         {
-            w.SetLED(middleLED, 0xFFFFFF, laserBrightness);
-            if(middleLED - 1 >= 0) w.SetLED(middleLED - 1, 0xFFFFFF, laserBrightness);
-            if(middleLED + 1 < w.LEDCount) w.SetLED(middleLED + 1, 0xFFFFFF, laserBrightness);
+            w.SetLED(middleLED, color);
+            if(middleLED - 1 >= 0) w.SetLED(middleLED - 1, color);
+            if(middleLED + 1 < w.LEDCount) w.SetLED(middleLED + 1, color);
         }
-        if(laserBrightness <= 0) return true;
         return false;
     }
 }

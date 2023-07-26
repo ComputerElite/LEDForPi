@@ -67,6 +67,12 @@ public class Color
         this.g = g;
         this.b = b;
     }
+    
+    // Multiplication
+    public static Color operator *(Color a, float b)
+    {
+        return new Color(a.r * b, a.g * b, a.b * b);
+    }
 
     public static Color Lerp(Color a, Color b, float t)
     {

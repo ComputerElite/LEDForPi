@@ -32,6 +32,8 @@ public class RBSongPlayer
 
     public static void SetSongTime(float songTime)
     {
+        // Sync to 35 ms precision
+        if (Math.Abs(elapsedSeconds - songTime) < .35) return;
         songStartTime = DateTime.Now - TimeSpan.FromSeconds(songTime);
     }
 
@@ -76,6 +78,7 @@ public class RBSongPlayer
     
     public static void PlaySong(StripWrapper strip, MapDifficulty m)
     {
+        laserShots.Clear();
         orgMap = new MapDifficulty(m);
         controllers.Clear();
         currentSongId++;

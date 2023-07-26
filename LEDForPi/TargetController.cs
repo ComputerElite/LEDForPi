@@ -80,9 +80,7 @@ public class TargetController
             color = 0xFF0000 + (int)Math.Round((1 - redAmount) * 0xFF) * 0x100 + (int)Math.Round((1 - redAmount) * 0xFF);
         }
 
-        double brightness = 0;
-        if(progress < 0) brightness = 1 + progress;
-        else brightness = 1 - progress;
+        double brightness = 1 - Math.Pow(progress, data.power);
         brightness *= brightness;
         if (led == Utils.LocationToLEDIndex(RBSongPlayer.shipLocation, stripWrapper))
         {
