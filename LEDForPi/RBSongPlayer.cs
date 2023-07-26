@@ -92,6 +92,7 @@ public class RBSongPlayer
         
         currentColor = GetColorAt(-9999f); // uses color index 0 of the map which should be the default rb color
         currentBgColor = GetColorAt(-9999f, true);
+        actualColor = currentBgColor;
 
         // Order by spawn order
         map.targets = map.targets.OrderBy(x => x.time).ToList();
