@@ -5,7 +5,11 @@ public class Utils
 
     public static int LocationToLEDIndex(float location, StripWrapper stripWrapper)
     {
-        return (stripWrapper.LEDCount - 1) - (int)((location + 1) * (stripWrapper.LEDCount - 1) / 2f);
+        if (RBSongPlayer.flipped)
+        {
+            return (int)((location + 1) * (stripWrapper.LEDCount - 1) / 2f);
+        }
+        return (stripWrapper.LEDCount - 1) - (int)((location + 1) * (stripWrapper.LEDCount - 1) / 2f) - (RBSongPlayer.flipped ? stripWrapper.LEDCount + 1 : 0);
     }
     
     public static float Lerp(float a, float b, float t)

@@ -7,6 +7,7 @@ public class LaserShot
 
     public bool Update(StripWrapper w)
     {
+        if (!RBSongPlayer.enableLaser) return true;
         double timeSinceLastShoot = RBSongPlayer.elapsedSeconds - shootTime;
         if(timeSinceLastShoot > 1) return true;
         

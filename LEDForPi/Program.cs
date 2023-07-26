@@ -10,10 +10,18 @@ using NetCoreAudio;
 using rpi_ws281x;
 
 StripWrapper w = new StripWrapper();
-w.Init(150, Pin.Gpio21);
+w.Init(120, Pin.Gpio21);
 
 Player p = new Player();
 p.Play("audio.wav");
+
+RBSongPlayer.flipped = false;
+RBSongPlayer.enableShip = false;
+RBSongPlayer.enableLaser = false;
+RBSongPlayer.enableCubes = false;
+RBSongPlayer.enableFlashes = true;
+RBSongPlayer.enableColorChanges = true;
+RBSongPlayer.enableShakes = true;
 
 HttpServer server = new HttpServer();
 server.logRequests = false;
@@ -25,6 +33,7 @@ server.AddWSRoute("/", request =>
         case DataType.UPDATE:
             RBSongPlayer.SetSongTime(r.time);
             RBSongPlayer.SetShipPos(r.shipPos);
+            RBSongPlayer.SetSpeed(r.speed);
             break;
         case DataType.LASER_SHOT:
             RBSongPlayer.LaserShot();

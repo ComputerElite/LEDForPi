@@ -19,7 +19,7 @@ public class RBSongPlayer
     public static int bgColor = 0;
     public static double lastSongShootTime = 0;
     public static int laserShootLED = 0;
-    public static double elapsedSeconds => (DateTime.Now - songStartTime).TotalSeconds;
+    public static double elapsedSeconds => (DateTime.Now - songStartTime).TotalSeconds * speed;
     public static List<int> hitTargets = new List<int>();
     public static List<TargetController> controllers = new();
     public static MapInfo info = new();
@@ -34,6 +34,14 @@ public class RBSongPlayer
     public static double brightness = 1;
     public static float waveIntensity = 0;
     public static float waveoffset = 0;
+    public static bool flipped = false;
+    public static bool enableColorChanges = true;
+    public static bool enableShakes = true;
+    public static bool enableFlashes= true;
+    public static bool enableShip= true;
+    public static bool enableCubes= true;
+    public static bool enableLaser = true;
+    public static float speed = 1f;
 
     public static void SetSongTime(float songTime)
     {
@@ -41,7 +49,12 @@ public class RBSongPlayer
         double deltaTime = Math.Abs(elapsedSeconds - songTime);
         //Logger.Log(deltaTime * 1000 + " ms off");
         if (deltaTime < .015) return;
-        songStartTime = DateTime.Now - TimeSpan.FromSeconds(songTime);
+        songStartTime = DateTime.Now - TimeSpan.FromSeconds(songTime) / speed;
+    }
+    
+    public static void SetSpeed(float s)
+    {
+        speed = s;
     }
 
     public static void LaserShot()
@@ -132,7 +145,7 @@ public class RBSongPlayer
                 double brightness = Math.Clamp(1 - timeSinceLastShoot * timeSinceLastShoot * 4f, .3, 1);
     
                 //UpdateSuggestedMovement(songTime);
-                w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
+                if(enableShip) w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
             
                 // Add 3 wide laser
                 for (int l = 0; l < laserShots.Count; l++)
@@ -155,7 +168,7 @@ public class RBSongPlayer
 
                 for (int i = 0; i < w.LEDCount; i++)
                 {
-                    double change = Math.Abs(Math.Sin((waveoffset + i) * .3f) * waveIntensity);
+                    double change = Math.Abs(Math.Sin((waveoffset + i * (RBSongPlayer.flipped ? -1 : 1)) * .3f) * waveIntensity);
                     w.SetLEDBrightness(i, 1 - Math.Clamp(change, 0, 1));
                 }
                 w.Render();
