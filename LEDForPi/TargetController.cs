@@ -1,3 +1,6 @@
+using System.Numerics;
+using ComputerUtils.Logging;
+
 namespace LEDForPi;
 
 public class TargetController
@@ -12,7 +15,14 @@ public class TargetController
         data = d;
         mySongPlayId = songPlayId;
         instantiateTime = songTime;
+        shakeIntensity = data.power / 10f;
+        shakeSpeed = data.height;
     }
+
+    float sharedSamplingPoint = 0;
+    
+    public float shakeIntensity = -10;
+    public float shakeSpeed = -10;
 
 
     /// <summary>
@@ -55,6 +65,22 @@ public class TargetController
             RBSongPlayer.currentBgColor = Color.Lerp(RBSongPlayer.lastBgColor, newColorBg, blend);
             return false;
         }
+        if(data.type == TargetType.SHAKE)
+        {
+            return true;
+            if (progress < 0) return false;
+            if (progress > 1)
+            {
+                return true;
+            }
+
+            sharedSamplingPoint += RBSongPlayer.deltaTime * shakeSpeed / 4f;
+            float currentIntensity = shakeIntensity * (1f - CodeAnimationHelpers.EaseOutCurve(progress));
+            double newPoint = Utils.PerlinNoise(sharedSamplingPoint) * currentIntensity;
+            Logger.Log(newPoint.ToString());
+            RBSongPlayer.brightness = Math.Clamp(.5 + (newPoint + 1) / 2 * .5, 0, 1);
+            return false;
+        }
         if (data.type != TargetType.NORMAL) return true;
         if (RBSongPlayer.hitTargets.Contains(data.index)) return true;
         
@@ -80,7 +106,7 @@ public class TargetController
             color = 0xFF0000 + (int)Math.Round((1 - redAmount) * 0xFF) * 0x100 + (int)Math.Round((1 - redAmount) * 0xFF);
         }
 
-        double brightness = 1 - Math.Pow(progress, data.power);
+        double brightness = Math.Clamp(1 - Math.Pow(progress, data.power), 0, 1);
         brightness *= brightness;
         if (led == Utils.LocationToLEDIndex(RBSongPlayer.shipLocation, stripWrapper))
         {

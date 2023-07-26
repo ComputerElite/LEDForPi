@@ -12,4 +12,9 @@ public class Utils
     {
         return a + (b - a) * t;
     }
+
+    public static double PerlinNoise(float x)
+    {
+        return Math.Sin(x + 2) * Math.Sin(2 * x + 1) * -Math.Sin(2.5f * x + 1);
+    }
 }

@@ -16,6 +16,7 @@ Player p = new Player();
 p.Play("audio.wav");
 
 HttpServer server = new HttpServer();
+server.logRequests = false;
 server.AddWSRoute("/", request =>
 {
     DataReport r = JsonSerializer.Deserialize<DataReport>(request.bodyString);

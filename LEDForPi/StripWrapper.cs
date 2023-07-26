@@ -9,7 +9,7 @@ public class StripWrapper
     public WS281x rpi;
     public Controller controller;
     public int LEDCount => controller.LEDCount;
-    public byte brightness => controller.Brightness;
+    public Dictionary<int, System.Drawing.Color> colors = new();
     public void Init(int leds, Pin pin = Pin.Gpio18)
     {
         settings = Settings.CreateDefaultSettings();
@@ -20,26 +20,33 @@ public class StripWrapper
         controller = settings.AddController(leds, pin, StripType.WS2812_STRIP, ControllerType.Unknown, 255, false);
         rpi = new WS281x(settings);
     }
-
-    public void SetLED(int ledId, System.Drawing.Color color)
-    {
-        controller.SetLED(ledId, color);
-    }
-
-    public void SetLED(int ledId, int r, int g, int b)
-    {
-        controller.SetLED(ledId, System.Drawing.Color.FromArgb(r, g, b));
-    }
     
+    public void SetBrightness(double brightness)
+    {
+        foreach (KeyValuePair<int,System.Drawing.Color> c in colors)
+        {
+            SetLED(c.Key, c.Value, brightness);
+        }
+    }
+
     public void SetLED(int ledId, int rgb)
     {
         System.Drawing.Color c = GetColorFromRGB(rgb);
+        colors[ledId] = c;
         controller.SetLED(ledId, c);
     }
     public void SetLED(int ledId, int rgb, double brightness)
     {
         System.Drawing.Color c = GetColorFromRGB(rgb);
         c = System.Drawing.Color.FromArgb((int)Math.Round(c.R * brightness), (int)Math.Round(c.G * brightness), (int)Math.Round(c.B * brightness));
+        colors[ledId] = c;
+        controller.SetLED(ledId, c);
+    }
+    
+    public void SetLED(int ledId, System.Drawing.Color color, double brightness)
+    {
+        System.Drawing.Color c = System.Drawing.Color.FromArgb((int)Math.Round(color.R * brightness), (int)Math.Round(color.G * brightness), (int)Math.Round(color.B * brightness));
+        colors[ledId] = c;
         controller.SetLED(ledId, c);
     }
 
@@ -47,20 +54,15 @@ public class StripWrapper
     {
         return System.Drawing.Color.FromArgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff);
     }
-    
-    public void SetAllLED(System.Drawing.Color color)
-    {
-        controller.SetAll(color);
-    }
 
-    public void SetAllLED(int r, int g, int b)
-    {
-        controller.SetAll(System.Drawing.Color.FromArgb(r, g, b));
-    }
-    
     public void SetAllLED(int rgb)
     {
-        controller.SetAll(System.Drawing.Color.FromArgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff));
+        System.Drawing.Color c = GetColorFromRGB(rgb);
+        for(int i = 0; i < LEDCount; i++)
+        {
+            colors[i] = c;
+        }
+        controller.SetAll(c);
     }
 
     public void Render()

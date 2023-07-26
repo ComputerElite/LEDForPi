@@ -13,6 +13,8 @@ public class RBSongPlayer
     public static StripWrapper w = new StripWrapper();
     public static float shipLocation = 0;
     public static DateTime songStartTime = DateTime.Now;
+    public static DateTime lastUpdate = DateTime.Now;
+    public static float deltaTime => (float)(lastUpdate - DateTime.Now).TotalSeconds;
     public static int currentSongId = 0;
     public static int bgColor = 0;
     public static double lastSongShootTime = 0;
@@ -29,12 +31,13 @@ public class RBSongPlayer
     public static Color lastBgColor = new(0, 0, 0);
     public static Color actualColor = new(0, 0, 0);
     public static List<LaserShot> laserShots = new();
+    public static double brightness = 1;
 
     public static void SetSongTime(float songTime)
     {
         // Sync to 15 ms precision
         double deltaTime = Math.Abs(elapsedSeconds - songTime);
-        Logger.Log(deltaTime * 1000 + " ms off");
+        //Logger.Log(deltaTime * 1000 + " ms off");
         if (deltaTime < .015) return;
         songStartTime = DateTime.Now - TimeSpan.FromSeconds(songTime);
     }
@@ -81,6 +84,7 @@ public class RBSongPlayer
     public static void PlaySong(StripWrapper strip, MapDifficulty m)
     {
         laserShots.Clear();
+        brightness = 1;
         orgMap = new MapDifficulty(m);
         controllers.Clear();
         currentSongId++;
@@ -142,11 +146,13 @@ public class RBSongPlayer
                     i--;
                 }
             }
+            //w.SetBrightness(RBSongPlayer.brightness);
             w.Render();
             if (controllers.Count <= 0 && map.targets.Count <= 0)
             {
                 break;
             }
+            lastUpdate = DateTime.Now;
         }
     }
     
