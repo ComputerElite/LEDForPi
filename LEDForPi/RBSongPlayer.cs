@@ -14,7 +14,7 @@ public class RBSongPlayer
     public static float shipLocation = 0;
     public static DateTime songStartTime = DateTime.Now;
     public static DateTime lastUpdate = DateTime.Now;
-    public static float deltaTime => (float)(lastUpdate - DateTime.Now).TotalSeconds;
+    public static float deltaTime => (float)(lastUpdate - DateTime.Now).TotalSeconds * speed;
     public static int currentSongId = 0;
     public static int bgColor = 0;
     public static double lastSongShootTime = 0;
