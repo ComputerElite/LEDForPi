@@ -110,57 +110,65 @@ public class RBSongPlayer
 
         while (true)
         {
-            if (thisPlayId != currentSongId) return;
-            float songTime = Convert.ToSingle(elapsedSeconds);
-            w.SetAllLED(actualColor.ToInt()); // turn off all leds
-            // Spawn targets
-            // Instantiate all song cubes to instantiate
-            if (map.targets.Count > 0)
+            try
             {
-                while (songTime >= map.targets[0].time - map.targets[0].lifetime / 2)
+                if (thisPlayId != currentSongId) return;
+                float songTime = Convert.ToSingle(elapsedSeconds);
+                w.SetAllLED(actualColor.ToInt()); // turn off all leds
+                // Spawn targets
+                // Instantiate all song cubes to instantiate
+                if (map.targets.Count > 0)
                 {
-                    controllers.Add(new TargetController(map.targets[0], songTime, thisPlayId));
-                    map.targets.RemoveAt(0);
-                    if (map.targets.Count <= 0) break;
+                    while (songTime >= map.targets[0].time - map.targets[0].lifetime / 2)
+                    {
+                        controllers.Add(new TargetController(map.targets[0], songTime, thisPlayId));
+                        map.targets.RemoveAt(0);
+                        if (map.targets.Count <= 0) break;
+                    }
                 }
-            }
             
-            // Show ship location
-            double timeSinceLastShoot = elapsedSeconds - lastSongShootTime;
-            double brightness = Math.Clamp(1 - timeSinceLastShoot * timeSinceLastShoot * 4f, .3, 1);
+                // Show ship location
+                double timeSinceLastShoot = elapsedSeconds - lastSongShootTime;
+                double brightness = Math.Clamp(1 - timeSinceLastShoot * timeSinceLastShoot * 4f, .3, 1);
     
-            //UpdateSuggestedMovement(songTime);
-            w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
+                //UpdateSuggestedMovement(songTime);
+                w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
             
-            // Add 3 wide laser
-            for (int l = 0; l < laserShots.Count; l++)
-            {
-                if (laserShots[l].Update(w))
+                // Add 3 wide laser
+                for (int l = 0; l < laserShots.Count; l++)
                 {
-                    laserShots.RemoveAt(l);
-                    l--;
-                }
-            } 
-            // Update targets
-            for (int i = 0; i < controllers.Count; i++)
-            {
-                if (controllers[i].Update(songTime, w, currentSuggestedLED))
+                    if (laserShots[l].Update(w))
+                    {
+                        laserShots.RemoveAt(l);
+                        l--;
+                    }
+                } 
+                // Update targets
+                for (int i = 0; i < controllers.Count; i++)
                 {
-                    controllers.RemoveAt(i);
-                    i--;
+                    if (controllers[i].Update(songTime, w, currentSuggestedLED))
+                    {
+                        controllers.RemoveAt(i);
+                        i--;
+                    }
                 }
-            }
 
-            for (int i = 0; i < w.LEDCount; i++)
-            {
-                double change = Math.Abs(Math.Sin((waveoffset + i) * .3f) * waveIntensity);
-                w.SetLEDBrightness(i, 1 - Math.Clamp(change, 0, 1));
+                for (int i = 0; i < w.LEDCount; i++)
+                {
+                    double change = Math.Abs(Math.Sin((waveoffset + i) * .3f) * waveIntensity);
+                    w.SetLEDBrightness(i, 1 - Math.Clamp(change, 0, 1));
+                }
+                w.Render();
+                if (controllers.Count <= 0 && map.targets.Count <= 0)
+                {
+                    break;
+                }
             }
-            w.Render();
-            if (controllers.Count <= 0 && map.targets.Count <= 0)
+            catch (Exception e)
             {
-                break;
+                Logger.Log("Frame dropped: " + e);
             }
+            
             lastUpdate = DateTime.Now;
         }
     }

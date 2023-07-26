@@ -10,7 +10,7 @@ using NetCoreAudio;
 using rpi_ws281x;
 
 StripWrapper w = new StripWrapper();
-w.Init(120, Pin.Gpio21);
+w.Init(150, Pin.Gpio21);
 
 Player p = new Player();
 p.Play("audio.wav");
