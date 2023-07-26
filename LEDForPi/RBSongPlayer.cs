@@ -16,7 +16,6 @@ public class RBSongPlayer
     public static DateTime lastUpdate = DateTime.Now;
     public static float deltaTime => (float)(lastUpdate - DateTime.Now).TotalSeconds * speed;
     public static int currentSongId = 0;
-    public static int bgColor = 0;
     public static double lastSongShootTime = 0;
     public static int laserShootLED = 0;
     public static double elapsedSeconds => (DateTime.Now - songStartTime).TotalSeconds * speed;
@@ -31,7 +30,6 @@ public class RBSongPlayer
     public static Color lastBgColor = new(0, 0, 0);
     public static Color actualColor = new(0, 0, 0);
     public static List<LaserShot> laserShots = new();
-    public static double brightness = 1;
     public static float waveIntensity = 0;
     public static float waveoffset = 0;
     public static bool flipped = false;
@@ -42,6 +40,8 @@ public class RBSongPlayer
     public static bool enableCubes= true;
     public static bool enableLaser = true;
     public static float speed = 1f;
+    public static int playfieldSize = -1;
+    public static int playfieldStartLEDIndex = 0;
 
     public static void SetSongTime(float songTime)
     {
@@ -99,7 +99,7 @@ public class RBSongPlayer
     public static void PlaySong(StripWrapper strip, MapDifficulty m)
     {
         laserShots.Clear();
-        brightness = 1;
+        if(playfieldSize == -1) playfieldSize = strip.LEDCount;
         waveoffset = 0;
         waveIntensity = 0;
         orgMap = new MapDifficulty(m);
@@ -238,11 +238,5 @@ public class RBSongPlayer
         progress = CodeAnimationHelpers.EaseOutCurve(progress);
         float lerpPositionX = Utils.Lerp(targetBefore.location, targetAfter.location, progress);
         return lerpPositionX;
-    }
-
-
-    public static void SetBG(int rBg)
-    {
-        bgColor = rBg;
     }
 }

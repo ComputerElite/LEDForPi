@@ -16,9 +16,11 @@ Player p = new Player();
 p.Play("audio.wav");
 
 RBSongPlayer.flipped = false;
-RBSongPlayer.enableShip = false;
-RBSongPlayer.enableLaser = false;
-RBSongPlayer.enableCubes = false;
+RBSongPlayer.playfieldSize = -1;
+RBSongPlayer.playfieldStartLEDIndex = 0;
+RBSongPlayer.enableShip = true;
+RBSongPlayer.enableLaser = true;
+RBSongPlayer.enableCubes = true;
 RBSongPlayer.enableFlashes = true;
 RBSongPlayer.enableColorChanges = true;
 RBSongPlayer.enableShakes = true;

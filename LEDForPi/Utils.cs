@@ -7,9 +7,10 @@ public class Utils
     {
         if (RBSongPlayer.flipped)
         {
-            return (int)((location + 1) * (stripWrapper.LEDCount - 1) / 2f);
+            return (int)((location + 1) * (RBSongPlayer.playfieldSize - 1) / 2f) + RBSongPlayer.playfieldStartLEDIndex;
         }
-        return (stripWrapper.LEDCount - 1) - (int)((location + 1) * (stripWrapper.LEDCount - 1) / 2f) - (RBSongPlayer.flipped ? stripWrapper.LEDCount + 1 : 0);
+
+        return (stripWrapper.LEDCount - 1) - (int)((location + 1) * (RBSongPlayer.playfieldSize - 1) / 2f) - RBSongPlayer.playfieldStartLEDIndex;
     }
     
     public static float Lerp(float a, float b, float t)
