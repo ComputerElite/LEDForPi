@@ -32,7 +32,7 @@ public class RBSongPlayer
 
     public static void SetSongTime(float songTime)
     {
-        // Sync to 35 ms precision
+        // Sync to 15 ms precision
         double deltaTime = Math.Abs(elapsedSeconds - songTime);
         Logger.Log(deltaTime * 1000 + " ms off");
         if (deltaTime < .015) return;
