@@ -32,6 +32,8 @@ public class RBSongPlayer
     public static Color actualColor = new(0, 0, 0);
     public static List<LaserShot> laserShots = new();
     public static double brightness = 1;
+    public static float waveIntensity = 0;
+    public static float waveoffset = 0;
 
     public static void SetSongTime(float songTime)
     {
@@ -85,6 +87,8 @@ public class RBSongPlayer
     {
         laserShots.Clear();
         brightness = 1;
+        waveoffset = 0;
+        waveIntensity = 0;
         orgMap = new MapDifficulty(m);
         controllers.Clear();
         currentSongId++;
@@ -146,7 +150,12 @@ public class RBSongPlayer
                     i--;
                 }
             }
-            //w.SetBrightness(RBSongPlayer.brightness);
+
+            for (int i = 0; i < w.LEDCount; i++)
+            {
+                double change = Math.Abs(Math.Sin((waveoffset + i) * .3f) * waveIntensity);
+                w.SetLEDBrightness(i, 1 - Math.Clamp(change, 0, 1));
+            }
             w.Render();
             if (controllers.Count <= 0 && map.targets.Count <= 0)
             {

@@ -67,18 +67,18 @@ public class TargetController
         }
         if(data.type == TargetType.SHAKE)
         {
-            return true;
             if (progress < 0) return false;
             if (progress > 1)
             {
                 return true;
             }
 
-            sharedSamplingPoint += RBSongPlayer.deltaTime * shakeSpeed / 4f;
-            float currentIntensity = shakeIntensity * (1f - CodeAnimationHelpers.EaseOutCurve(progress));
-            double newPoint = Utils.PerlinNoise(sharedSamplingPoint) * currentIntensity;
-            Logger.Log(newPoint.ToString());
-            RBSongPlayer.brightness = Math.Clamp(.5 + (newPoint + 1) / 2 * .5, 0, 1);
+            // intensity between 100 and 1000
+            float currentIntensity = (1f - CodeAnimationHelpers.EaseOutCurve(progress));
+
+            RBSongPlayer.waveIntensity = currentIntensity;
+            // shake speed 0 - 100
+            RBSongPlayer.waveoffset += RBSongPlayer.deltaTime * shakeSpeed * 20f;
             return false;
         }
         if (data.type != TargetType.NORMAL) return true;

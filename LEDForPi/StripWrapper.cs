@@ -69,4 +69,9 @@ public class StripWrapper
     {
         rpi.Render();
     }
+
+    public void SetLEDBrightness(int i, double brightness)
+    {
+        SetLED(i, colors[i], brightness);
+    }
 }
