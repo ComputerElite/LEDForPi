@@ -14,7 +14,7 @@ public class RBSongPlayer
     public static float shipLocation = 0;
     public static DateTime songStartTime = DateTime.Now;
     public static DateTime lastUpdate = DateTime.Now;
-    public static float deltaTime => (float)(lastUpdate - DateTime.Now).TotalSeconds * speed;
+    public static float deltaTime => (float)(DateTime.Now - lastUpdate).TotalSeconds * speed;
     public static int currentSongId = 0;
     public static double lastSongShootTime = 0;
     public static int laserShootLED = 0;
@@ -36,6 +36,8 @@ public class RBSongPlayer
     public static float speed = 1f;
     public static bool useGame = true;
     public static RBReplay replay = null;
+    
+    public static List<double> fps = new();
 
     public static void SetSongTime(float songTime)
     {
@@ -200,7 +202,13 @@ public class RBSongPlayer
             {
                 Logger.Log("Frame dropped: " + e);
             }
-            
+            fps.Add(1.0 / deltaTime);
+
+            if (fps.Count > 100)
+            {
+                Logger.Log(fps.Average() + " FPS");
+                fps.Clear();
+            }
             lastUpdate = DateTime.Now;
         }
     }
