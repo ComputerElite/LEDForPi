@@ -117,7 +117,7 @@ public class TargetController
             }
         }
         
-        if (!RBSongPlayerConfig.enableCubes) return true;
+        if (!RBSongPlayerConfig.enableCubes) return false;
 
 
         int led = Utils.LocationToLEDIndex(data.location, stripWrapper);
