@@ -137,7 +137,7 @@ public class TargetController
 
         double brightness = Math.Clamp(1 - Math.Pow(progress, data.power), 0, 1);
         brightness *= brightness;
-        if (led == Utils.LocationToLEDIndex(RBSongPlayer.shipLocation, stripWrapper))
+        if (led == Utils.LocationToLEDIndex(RBSongPlayer.shipLocation, stripWrapper) && RBSongPlayerConfig.enableShip)
         {
             if (songTime % .05f < .025f)
                 stripWrapper.SetLED(led, currentSuggestedLED == led ? 0xFF00FF : color, brightness);
