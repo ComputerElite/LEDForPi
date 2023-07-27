@@ -192,6 +192,13 @@ public class RBSongPlayer
                     double change = Math.Abs(Math.Sin((waveoffset + i * (RBSongPlayerConfig.flipped ? -1 : 1)) * .3f) * waveIntensity);
                     w.SetLEDBrightness(i, 1 - Math.Clamp(change, 0, 1));
                 }
+                fps.Add(1.0 / deltaTime);
+
+                if (fps.Count > 100)
+                {
+                    Logger.Log(fps.Average() + " FPS");
+                    fps.Clear();
+                }
                 w.Render();
                 if (controllers.Count <= 0 && map.targets.Count <= 0)
                 {
@@ -202,13 +209,7 @@ public class RBSongPlayer
             {
                 Logger.Log("Frame dropped: " + e);
             }
-            fps.Add(1.0 / deltaTime);
-
-            if (fps.Count > 100)
-            {
-                Logger.Log(fps.Average() + " FPS");
-                fps.Clear();
-            }
+            
             lastUpdate = DateTime.Now;
         }
     }
@@ -282,7 +283,7 @@ public class RBSongPlayer
     public static void UpdateSuggestedMovement(float time)
     {
         float pos = GetSuggestedPositionForTime(time);
-        mapSortedByHitTime.targets.RemoveAll(x => x.time < time - 1f); // remove all targets that are too old
+        //mapSortedByHitTime.targets.RemoveAll(x => x.time < time - 20f); // remove all targets that are really old
         SetShipPos(pos);
         return;
         currentSuggestedLED = Utils.LocationToLEDIndex(pos, w);
