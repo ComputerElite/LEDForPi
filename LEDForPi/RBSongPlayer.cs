@@ -32,16 +32,10 @@ public class RBSongPlayer
     public static List<LaserShot> laserShots = new();
     public static float waveIntensity = 0;
     public static float waveoffset = 0;
-    public static bool flipped = false;
-    public static bool enableColorChanges = true;
-    public static bool enableShakes = true;
-    public static bool enableFlashes= true;
-    public static bool enableShip= true;
-    public static bool enableCubes= true;
-    public static bool enableLaser = true;
+    public static RBSongPlayerConfig config = new RBSongPlayerConfig();
     public static float speed = 1f;
-    public static int playfieldSize = -1;
-    public static int playfieldStartLEDIndex = 0;
+    public static bool useGame = true;
+    public static RBReplay replay = null;
 
     public static void SetSongTime(float songTime)
     {
@@ -51,13 +45,18 @@ public class RBSongPlayer
         if (deltaTime < .015) return;
         songStartTime = DateTime.Now - TimeSpan.FromSeconds(songTime) / speed;
     }
+
+    public static void Stop()
+    {
+        currentSongId++;
+    }
     
     public static void SetSpeed(float s)
     {
         speed = s;
     }
 
-    public static void LaserShot()
+    public static void LaserShot(bool instaRender = false)
     {
         lastSongShootTime = elapsedSeconds;
         laserShootLED = Utils.LocationToLEDIndex(shipLocation, w);
@@ -65,6 +64,7 @@ public class RBSongPlayer
             middleLED = laserShootLED,
             shootTime = lastSongShootTime
         });
+        if (instaRender) laserShots[^1].Update(w);
     }
 
     public static void SetShipPos(float pos)
@@ -99,7 +99,7 @@ public class RBSongPlayer
     public static void PlaySong(StripWrapper strip, MapDifficulty m)
     {
         laserShots.Clear();
-        if(playfieldSize == -1) playfieldSize = strip.LEDCount;
+        if(RBSongPlayerConfig.playfieldSize == -1) RBSongPlayerConfig.playfieldSize = strip.LEDCount;
         waveoffset = 0;
         waveIntensity = 0;
         orgMap = new MapDifficulty(m);
@@ -118,8 +118,16 @@ public class RBSongPlayer
         actualColor = currentBgColor;
 
         // Order by spawn order
-        map.targets = map.targets.OrderBy(x => x.time).ToList();
-        map.targets = map.targets.OrderBy(x => x.time - x.lifetime / 2).ToList();
+        map = OrderMapAndAddIndex(map);
+        
+        
+        if (!useGame)
+        {
+            if (replay != null)
+            {
+                replay.PlayFirstFrame();
+            }
+        }
 
         while (true)
         {
@@ -144,9 +152,6 @@ public class RBSongPlayer
                 double timeSinceLastShoot = elapsedSeconds - lastSongShootTime;
                 double brightness = Math.Clamp(1 - timeSinceLastShoot * timeSinceLastShoot * 4f, .3, 1);
     
-                //UpdateSuggestedMovement(songTime);
-                if(enableShip) w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
-            
                 // Add 3 wide laser
                 for (int l = 0; l < laserShots.Count; l++)
                 {
@@ -155,7 +160,21 @@ public class RBSongPlayer
                         laserShots.RemoveAt(l);
                         l--;
                     }
-                } 
+                }
+
+                if (!useGame)
+                {
+                    if (replay != null)
+                    {
+                        replay.PlayFrame();
+                    }
+                    else
+                    {
+                        UpdateSuggestedMovement(songTime);
+                    }
+                }
+                if(RBSongPlayerConfig.enableShip) w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
+            
                 // Update targets
                 for (int i = 0; i < controllers.Count; i++)
                 {
@@ -168,7 +187,7 @@ public class RBSongPlayer
 
                 for (int i = 0; i < w.LEDCount; i++)
                 {
-                    double change = Math.Abs(Math.Sin((waveoffset + i * (RBSongPlayer.flipped ? -1 : 1)) * .3f) * waveIntensity);
+                    double change = Math.Abs(Math.Sin((waveoffset + i * (RBSongPlayerConfig.flipped ? -1 : 1)) * .3f) * waveIntensity);
                     w.SetLEDBrightness(i, 1 - Math.Clamp(change, 0, 1));
                 }
                 w.Render();
@@ -185,11 +204,79 @@ public class RBSongPlayer
             lastUpdate = DateTime.Now;
         }
     }
+
+    private static MapDifficulty OrderMapAndAddIndex(MapDifficulty orgMap)
+    {
+        MapDifficulty map = new MapDifficulty(orgMap);
+        map.targets = map.targets.OrderBy(x => x.time).ToList();
+        int cubeIndex = 0;
+        for (int i = 0; i < map.targets.Count; i++)
+        {
+			if (map.targets[i].type != TargetType.NORMAL && map.targets[i].type != TargetType.MANUAL)
+            {
+                // We only have to do more stuff to normal and manual cubes
+                continue;
+		    }   
+			map.targets[i].index = cubeIndex;
+			cubeIndex++;
+            // Time to mark the cube as shootable (visually)
+			map.targets[i].markTime = -10f;
+            if (i > 0)
+            {
+                for(int r = 1; r <= i; r++)
+                {
+                    if (map.targets[i - r].type != TargetType.NORMAL && map.targets[i - r].type != TargetType.MANUAL)
+                    {
+                        continue;
+                    }
+                    map.targets[i].markTime = map.targets[i - r].time;
+                    break;
+                }
+            }
+            // Mark the cube as not shootable after shoot time (visually)
+            map.targets[i].unMarkTime = map.targets[i].time;
+		}
+        // Order by spawn order
+        map.targets = SortMap(map.targets);
+        return map;
+    }
     
+    public static List<TargetData> SortMap(List<TargetData> toSort)
+    {
+        List<TargetData> sorted = new List<TargetData>(toSort);
+
+        // Reset drive manager so currentDrive is -1 and thus no drive is active
+        sorted = sorted.OrderBy(x => x.time).ToList();
+
+        // Order by spawn order
+        sorted = sorted.OrderBy(x => x.time - x.lifetime / 2).ToList();
+
+        Dictionary<float, List<TargetData>> spawnTimes = new Dictionary<float, List<TargetData>>();
+        for (int i = 0; i < sorted.Count; i++)
+        {
+            float instantiateTime = sorted[i].time - sorted[i].lifetime / 2;
+            if (!spawnTimes.ContainsKey(instantiateTime))
+            {
+                spawnTimes.Add(instantiateTime, new List<TargetData>());
+            }
+            spawnTimes[instantiateTime].Add(sorted[i]);
+        }
+        sorted = new List<TargetData>();
+        for (int i = 0; i < spawnTimes.Count; i++)
+        {
+            spawnTimes[spawnTimes.Keys.ElementAt(i)].Sort((x, y) => x.location.CompareTo(y.location));
+            spawnTimes[spawnTimes.Keys.ElementAt(i)].Sort((x, y) => x.time.CompareTo(y.time));
+            sorted.AddRange(spawnTimes[spawnTimes.Keys.ElementAt(i)]);
+        }
+        return sorted;
+    }
+
     public static void UpdateSuggestedMovement(float time)
     {
         float pos = GetSuggestedPositionForTime(time);
         mapSortedByHitTime.targets.RemoveAll(x => x.time < time - 1f); // remove all targets that are too old
+        SetShipPos(pos);
+        return;
         currentSuggestedLED = Utils.LocationToLEDIndex(pos, w);
         w.SetLED(currentSuggestedLED, 0xFF00FF);
     }
@@ -227,7 +314,7 @@ public class RBSongPlayer
         }
 
         float totalDiff = targetAfter.time - targetBefore.time;
-        if (totalDiff > .2f) totalDiff = .2f;
+        //if (totalDiff > .2f) totalDiff = .2f;
         float progress = 0f;
         if(totalDiff != 0f)
         {
@@ -235,8 +322,79 @@ public class RBSongPlayer
         }
 
         if (progress > 1f) progress = 1f;
-        progress = CodeAnimationHelpers.EaseOutCurve(progress);
+        progress = CodeAnimationHelpers.EaseInOutCurve(progress);
         float lerpPositionX = Utils.Lerp(targetBefore.location, targetAfter.location, progress);
         return lerpPositionX;
+    }
+}
+
+public class RBSongPlayerConfig
+{
+    public static RBSongPlayerConfig instance = new RBSongPlayerConfig();
+
+    public static bool flipped
+    {
+        get => instance._flipped;
+        set => instance._flipped = value;
+    }
+    public static bool enableColorChanges
+    {
+        get => instance._enableColorChanges;
+        set => instance._enableColorChanges = value;
+    }
+    public static bool enableShakes
+    {
+        get => instance._enableShakes;
+        set => instance._enableShakes = value;
+    }
+    public static bool enableFlashes
+    {
+        get => instance._enableFlashes;
+        set => instance._enableFlashes = value;
+    }
+    public static bool enableShip
+    {
+        get => instance._enableShip;
+        set => instance._enableShip = value;
+    }
+    public static bool enableCubes
+    {
+        get => instance._enableCubes;
+        set => instance._enableCubes = value;
+    }
+    public static bool enableLaser 
+    {
+        get => instance._enableLaser;
+        set => instance._enableLaser = value;
+    }
+    public static int playfieldSize
+    {
+        get => instance._playfieldSize;
+        set => instance._playfieldSize = value;
+    }
+    public static int playfieldStartLEDIndex
+    {
+        get => instance._playfieldStartLEDIndex;
+        set => instance._playfieldStartLEDIndex = value;
+    }
+    public bool _flipped { get; set; } = false;
+    public bool _enableColorChanges { get; set; } = true;
+    public bool _enableShakes { get; set; } = true;
+    public bool _enableFlashes { get; set; } = true;
+    public bool _enableShip { get; set; } = true;
+    public bool _enableCubes { get; set; } = true;
+    public bool _enableLaser { get; set; } = true;
+    public int _playfieldSize { get; set; } = -1;
+    public int _playfieldStartLEDIndex { get; set; } = 0;
+    
+    public static void Save()
+    {
+        File.WriteAllText("config.json", JsonSerializer.Serialize(instance));
+    }
+
+    public static void Load()
+    {
+        if (!File.Exists("config.json")) Save();
+        instance = JsonSerializer.Deserialize<RBSongPlayerConfig>(File.ReadAllText("config.json"));
     }
 }

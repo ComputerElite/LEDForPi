@@ -29,3 +29,6 @@
 /home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/runtimes/win/lib/net6.0/System.Drawing.Common.dll
 /home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/ComputerUtils.dll
 /home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/ComputerUtils.pdb
+/home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/view.html
+/home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/config.html
+/home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/index.html

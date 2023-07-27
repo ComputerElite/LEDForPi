@@ -17,4 +17,16 @@
       <ProjectReference Include="..\..\ComputerUtils\ComputerUtils\ComputerUtils.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="view.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="config.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="index.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

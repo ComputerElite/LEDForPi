@@ -24,6 +24,8 @@ public class TargetController
     public float shakeIntensity = -10;
     public float shakeSpeed = -10;
 
+    private bool laserSpawned = false;
+
 
     /// <summary>
     /// Does everything to display the LED
@@ -39,7 +41,7 @@ public class TargetController
         // Handle flash target type
         if (data.type == TargetType.FLASH)
         {
-            if (!RBSongPlayer.enableFlashes) return true;
+            if (!RBSongPlayerConfig.enableFlashes) return true;
             if (progress < 0) return false;
             progress = 1 - progress;
             double alpha = Math.Pow(progress, 5);
@@ -50,7 +52,7 @@ public class TargetController
         // Handle Color change target type
         if (data.type == TargetType.COLORCHANGE)
         {
-            if (!RBSongPlayer.enableColorChanges) return true;
+            if (!RBSongPlayerConfig.enableColorChanges) return true;
             Color newColor = data.power == -2 ? new Color(.78f, 0f, .12f) : RBSongPlayer.info.colors[data.power / 2];
             Color newColorBg = data.power == -2 ? new Color(.13f, 0f, .02f) : RBSongPlayer.info.bgColors[data.power / 2];
             if (progress >= 1)
@@ -69,7 +71,7 @@ public class TargetController
         }
         if(data.type == TargetType.SHAKE)
         {
-            if (!RBSongPlayer.enableShakes) return true;
+            if (!RBSongPlayerConfig.enableShakes) return true;
             if (progress < 0) return false;
             if (progress > 1)
             {
@@ -92,9 +94,30 @@ public class TargetController
             return true;
         }
 
-        if (!RBSongPlayer.enableCubes) return true;
+        if (!RBSongPlayerConfig.enableCubes) return true;
 
         missed = progress > 0;
+        if (missed)
+        {
+            if (!RBSongPlayer.useGame && !laserSpawned)
+            {
+                // Do stuff based on replay
+                if (RBSongPlayer.replay == null)
+                {
+                    // On Auto play we obviously hit
+                    RBSongPlayer.LaserShot(true);
+                    laserSpawned = true;
+                    return true;
+                }
+                else
+                {
+                    RBReplayTarget t = RBSongPlayer.replay.GetCubeData(data);
+                    RBSongPlayer.LaserShot(true);
+                    laserSpawned = true;
+                    if (t.h) return true;
+                }
+            }
+        }
 
         int led = Utils.LocationToLEDIndex(data.location, stripWrapper);
         int color = 0xFFFFFF;

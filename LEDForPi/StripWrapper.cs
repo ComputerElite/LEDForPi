@@ -10,6 +10,7 @@ public class StripWrapper
     public Controller controller;
     public int LEDCount => controller.LEDCount;
     public Dictionary<int, System.Drawing.Color> colors = new();
+    public Dictionary<int, System.Drawing.Color> displayedColors = new();
     public void Init(int leds, Pin pin = Pin.Gpio18)
     {
         settings = Settings.CreateDefaultSettings();
@@ -67,6 +68,7 @@ public class StripWrapper
 
     public void Render()
     {
+        displayedColors = new Dictionary<int, System.Drawing.Color>(colors);
         rpi.Render();
     }
 

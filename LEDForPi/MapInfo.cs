@@ -3,17 +3,16 @@ namespace LEDForPi;
 [Serializable]
 public class MapInfo
 {
+    public string id { get; set; } = "";
     public string mapper { get; set; } = "";
     public string song { get; set; } = "";
     public string artist { get; set; } = "";
     public string songFileName { get; set; } = "";
-    public string orgSongFileName { get; set; } = "";
     /// <summary>
     /// The songs folder name, should be unique for custom songs
     /// </summary>
     public string folderName { get; set; } = "";
     public string coverFileName { get; set; } = "";
-    public string orgCoverFileName { get; set; } = "";
     public string tmpFolder { get; set; } = ""; // auto set
 
     /// <summary>
@@ -55,6 +54,14 @@ public class Color
     public float r { get; set; } = 0f;
     public float g { get; set; } = 0f;
     public float b { get; set; } = 0f;
+
+    public string hex
+    {
+        get
+        {
+            return ToInt().ToString("X");
+        }
+    }
     
     public Color()
     {
@@ -94,8 +101,8 @@ public class Color
 [Serializable]
 public class MapDifficultyInfo
 {
-    public string difficultyFileName = "";
-    public string difficultyName = "";
+    public string difficultyFileName { get; set; } = "";
+    public string difficultyName { get; set; } = "";
 
     public MapDifficultyInfo()
     {
