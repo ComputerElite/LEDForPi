@@ -93,9 +93,7 @@ public class TargetController
         {
             return true;
         }
-
-        if (!RBSongPlayerConfig.enableCubes) return true;
-
+        
         missed = progress > 0;
         if (missed)
         {
@@ -118,6 +116,9 @@ public class TargetController
                 }
             }
         }
+        
+        if (!RBSongPlayerConfig.enableCubes) return true;
+
 
         int led = Utils.LocationToLEDIndex(data.location, stripWrapper);
         int color = 0xFFFFFF;
