@@ -38,7 +38,7 @@
                     <div>
                         <label for="${key}">${key}</label>
                         ${typeof value === "number" ? 
-                      `<input onchange="SetProperty('${key}', parseInt(this.value))" type="number" id="${key}" value="${value}">` 
+                      `<input onchange="SetProperty('${key}', parseFloat(this.value))" type="number" id="${key}" value="${value}">` 
                     : `<input onchange="SetProperty('${key}', ${!value})" type="checkbox" id="${key}" ${value ? `checked` : ``}>`}
                         
                     </div>

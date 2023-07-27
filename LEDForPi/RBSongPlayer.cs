@@ -142,7 +142,7 @@ public class RBSongPlayer
             {
                 if (thisPlayId != currentSongId) return;
                 float songTime = Convert.ToSingle(elapsedSeconds);
-                w.SetAllLED(actualColor.ToInt()); // turn off all leds
+                w.SetAllLED(RBSongPlayerConfig.enableBGColor ? actualColor.ToInt() : 0x000000); // set bg color
                 // Spawn targets
                 // Instantiate all song cubes to instantiate
                 if (map.targets.Count > 0)
@@ -388,13 +388,28 @@ public class RBSongPlayerConfig
     }
     public static int playfieldSize
     {
-        get => instance._playfieldSize;
+        get => (int)instance._playfieldSize;
         set => instance._playfieldSize = value;
     }
     public static int playfieldStartLEDIndex
     {
-        get => instance._playfieldStartLEDIndex;
+        get => (int)instance._playfieldStartLEDIndex;
         set => instance._playfieldStartLEDIndex = value;
+    }
+    public static bool enableBGColor
+    {
+        get => instance._enableBGColor;
+        set => instance._enableBGColor = value;
+    }
+    public static double flashTimeCubeShipMs
+    {
+        get => instance._flashTimeCubeShipMs;
+        set => instance._flashTimeCubeShipMs = value;
+    }
+    public static int waveSpeedMultiplier
+    {
+        get => (int)instance._waveSpeedMultiplier;
+        set => instance._waveSpeedMultiplier = value;
     }
     public bool _flipped { get; set; } = false;
     public bool _enableColorChanges { get; set; } = true;
@@ -404,8 +419,11 @@ public class RBSongPlayerConfig
     public bool _enableCubes { get; set; } = true;
     public bool _enableLaser { get; set; } = true;
     public bool _flipShakeDirectionOnColorChange { get; set; } = true;
-    public int _playfieldSize { get; set; } = -1;
-    public int _playfieldStartLEDIndex { get; set; } = 0;
+    public bool _enableBGColor { get; set; } = true;
+    public double _flashTimeCubeShipMs { get; set; } = .05;
+    public double _waveSpeedMultiplier { get; set; } = 20;
+    public double _playfieldSize { get; set; } = -1;
+    public double _playfieldStartLEDIndex { get; set; } = 0;
     
     public static void Save()
     {

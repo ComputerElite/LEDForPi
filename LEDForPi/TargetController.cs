@@ -43,7 +43,11 @@ public class TargetController
         // Handle flash target type
         if (data.type == TargetType.FLASH)
         {
-            if (!RBSongPlayerConfig.enableFlashes) return true;
+            if (!RBSongPlayerConfig.enableFlashes)
+            {
+                RBSongPlayer.actualColor = RBSongPlayer.currentBgColor;
+                return false;
+            }
             if (progress < 0) return false;
             progress = 1 - progress;
             double alpha = Math.Pow(progress, 5);
@@ -54,7 +58,7 @@ public class TargetController
         // Handle Color change target type
         if (data.type == TargetType.COLORCHANGE)
         {
-            if (!RBSongPlayerConfig.enableColorChanges) return true;
+            if (!RBSongPlayerConfig.enableColorChanges) return false;
             Color newColor = data.power == -2 ? new Color(.78f, 0f, .12f) : RBSongPlayer.info.colors[data.power / 2];
             Color newColorBg = data.power == -2 ? new Color(.13f, 0f, .02f) : RBSongPlayer.info.bgColors[data.power / 2];
             if (progress >= 1)
@@ -73,7 +77,11 @@ public class TargetController
         }
         if(data.type == TargetType.SHAKE)
         {
-            if (!RBSongPlayerConfig.enableShakes) return true;
+            if (!RBSongPlayerConfig.enableShakes)
+            {
+                RBSongPlayer.waveIntensity = 0f;
+                return false;
+            }
             if (progress < 0) return false;
             if (progress > 1)
             {
@@ -85,7 +93,7 @@ public class TargetController
 
             RBSongPlayer.waveIntensity = currentIntensity;
             // shake speed 0 - 100
-            RBSongPlayer.waveoffset += RBSongPlayer.deltaTime * shakeSpeed * 20f * RBSongPlayer.waveDirection;
+            RBSongPlayer.waveoffset += RBSongPlayer.deltaTime * shakeSpeed * RBSongPlayerConfig.waveSpeedMultiplier * RBSongPlayer.waveDirection;
             return false;
         }
         if (data.type != TargetType.NORMAL) return true;
@@ -141,7 +149,7 @@ public class TargetController
         brightness *= brightness;
         if (led == Utils.LocationToLEDIndex(RBSongPlayer.shipLocation, stripWrapper) && RBSongPlayerConfig.enableShip)
         {
-            if (songTime % .05f < .025f)
+            if (songTime % RBSongPlayerConfig.flashTimeCubeShipMs < RBSongPlayerConfig.flashTimeCubeShipMs / 2)
                 stripWrapper.SetLED(led, currentSuggestedLED == led ? 0xFF00FF : color, brightness);
             else return false;
         }
