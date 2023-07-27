@@ -32,6 +32,7 @@ public class RBSongPlayer
     public static List<LaserShot> laserShots = new();
     public static float waveIntensity = 0;
     public static float waveoffset = 0;
+    public static float waveDirection = 1f;
     public static RBSongPlayerConfig config = new RBSongPlayerConfig();
     public static float speed = 1f;
     public static bool useGame = true;
@@ -376,6 +377,11 @@ public class RBSongPlayerConfig
         get => instance._enableLaser;
         set => instance._enableLaser = value;
     }
+    public static bool flipShakeDirectionOnColorChange
+    {
+        get => instance._flipShakeDirectionOnColorChange;
+        set => instance._flipShakeDirectionOnColorChange = value;
+    }
     public static int playfieldSize
     {
         get => instance._playfieldSize;
@@ -393,6 +399,7 @@ public class RBSongPlayerConfig
     public bool _enableShip { get; set; } = true;
     public bool _enableCubes { get; set; } = true;
     public bool _enableLaser { get; set; } = true;
+    public bool _flipShakeDirectionOnColorChange { get; set; } = true;
     public int _playfieldSize { get; set; } = -1;
     public int _playfieldStartLEDIndex { get; set; } = 0;
     

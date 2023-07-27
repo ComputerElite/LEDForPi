@@ -17,6 +17,8 @@ public class TargetController
         instantiateTime = songTime;
         shakeIntensity = data.power / 10f;
         shakeSpeed = data.height;
+
+        if (data.type == TargetType.COLORCHANGE && RBSongPlayerConfig.flipShakeDirectionOnColorChange) RBSongPlayer.waveDirection *= -1;
     }
 
     float sharedSamplingPoint = 0;
@@ -83,7 +85,7 @@ public class TargetController
 
             RBSongPlayer.waveIntensity = currentIntensity;
             // shake speed 0 - 100
-            RBSongPlayer.waveoffset += RBSongPlayer.deltaTime * shakeSpeed * 20f;
+            RBSongPlayer.waveoffset += RBSongPlayer.deltaTime * shakeSpeed * 20f * RBSongPlayer.waveDirection;
             return false;
         }
         if (data.type != TargetType.NORMAL) return true;
