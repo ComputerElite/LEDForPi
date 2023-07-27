@@ -105,7 +105,6 @@
         var songId = -1
         var playing = false
         ws.onmessage = e => {
-            ws.send("gimme")
             var data = JSON.parse(e.data)
             if(songId == -1) songId = data.currentSongId
             if(data.currentSongId != songId) {
@@ -114,6 +113,7 @@
                 audio.pause();
                 audio.currentTime = 0;
                 ws.close()
+                return
             }
             if(data.songTime > 0 && !playing) {
                 console.log("playing")
@@ -121,6 +121,14 @@
                 audio.preservesPitch = false
                 audio.play()
                 playing = true
+            }
+            if(playing) {
+                // We don't need to update as often when we're playing
+                setTimeout(() => {
+                    ws.send("gimme")
+                }, 1000)
+            } else {
+                ws.send("gimme")
             }
         }
     }
