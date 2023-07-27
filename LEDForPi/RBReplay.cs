@@ -110,6 +110,9 @@ public class RBReplay
         } else if (gameplayModifiers.slower)
         {
             RBSongPlayer.SetSpeed(.75f);
+        } else {
+            RBSongPlayer.SetSpeed(1f);
+            
         }
 	}
 

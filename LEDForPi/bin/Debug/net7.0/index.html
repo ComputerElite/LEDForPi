@@ -70,7 +70,9 @@
                 replay: name
             })
         }).then(res => {
-            LoadAndUpdateAudio();
+            setTimeout(() => {
+                LoadAndUpdateAudio();
+            }, 1000)
         })
     }
     
@@ -115,6 +117,8 @@
             }
             if(data.songTime > 0 && !playing) {
                 console.log("playing")
+                audio.playbackRate = data.speed
+                audio.preservesPitch = false
                 audio.play()
                 playing = true
             }

@@ -72,7 +72,7 @@ public class RBSongPlayer
 
     public static void SetShipPos(float pos)
     {
-        shipLocation = pos;
+        shipLocation = Math.Clamp(pos, -1, 1);
     }
 
     public static void TargetHit(int index)
@@ -129,6 +129,10 @@ public class RBSongPlayer
             if (replay != null)
             {
                 replay.PlayFirstFrame();
+            }
+            else
+            {
+                speed = 1;
             }
         }
 
