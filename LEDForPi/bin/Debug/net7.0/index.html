@@ -19,6 +19,7 @@
     <br>
 
     <input type="button" value="Stop song" onclick="Stop()">
+    <label for="lag">Audio offset</label><input type="number" value="0" id="lag">
     <h2>Replays</h2>
     <input type="button" value="Auto play" onclick="ReplaySelected('')">
     <div id="replays">
@@ -39,6 +40,10 @@
     var selectedReplay = ""
     var songs = []
     var replays = []
+    document.getElementById("lag").value = localStorage.getItem("lag") || 0
+    document.getElementById("lag").onchange = e => {
+        localStorage.setItem("lag", e.target.value)
+    }
     
     function Stop() {
         fetch(`/stopsong`, {
@@ -90,12 +95,16 @@
         }))
     }
     
+    
     function LoadAndUpdateAudio() {
+        var lastUpdate = 0;
+        var delays = []
         var audio = new Audio(`/audio/${selectedSong}`)
         audio.load()
         var ws = new WebSocket(`ws://${window.location.host}/status`)
         ws.onopen = () => {
             ws.send("gimme")
+            lastUpdate = Date.now()
         }
         ws.onclose = () => {
             console.log("ws closed")
@@ -105,6 +114,9 @@
         var songId = -1
         var playing = false
         ws.onmessage = e => {
+            var delta = Date.now() - lastUpdate
+            delays.push(delta)
+            
             var data = JSON.parse(e.data)
             if(songId == -1) songId = data.currentSongId
             if(data.currentSongId != songId) {
@@ -113,8 +125,12 @@
                 audio.pause();
                 audio.currentTime = 0;
                 ws.close()
+                return
             }
-            if(data.songTime > 0 && !playing) {
+            if(delays.length > 15) delays.shift()
+            var avgDelay = (delays.reduce((a, b) => a + b, 0) / delays.length) / 2;
+            console.log("delay is " + avgDelay + " ms")
+            if(data.songTime > 0 - avgDelay / 1000 - document.getElementById("lag").value && !playing) {
                 console.log("playing")
                 audio.playbackRate = data.speed
                 audio.preservesPitch = false
@@ -128,6 +144,7 @@
                 }, 1000)
             } else {
                 ws.send("gimme")
+                lastUpdate = Date.now()
             }
         }
     }

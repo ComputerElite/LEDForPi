@@ -180,7 +180,7 @@ public class RBSongPlayer
                         UpdateSuggestedMovement(songTime);
                     }
                 }
-                if(RBSongPlayerConfig.enableShip) w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, brightness);
+                if(RBSongPlayerConfig.enableShip) w.SetLED(Utils.LocationToLEDIndex(shipLocation, w), 0xff33b4, RBSongPlayerConfig.brightenShipOnShoot ? brightness : 1);
             
                 // Update targets
                 for (int i = 0; i < controllers.Count; i++)
@@ -411,6 +411,11 @@ public class RBSongPlayerConfig
         get => (int)instance._waveSpeedMultiplier;
         set => instance._waveSpeedMultiplier = value;
     }
+    public static bool brightenShipOnShoot
+    {
+        get => instance._brightenShipOnShoot;
+        set => instance._brightenShipOnShoot = value;
+    }
     public bool _flipped { get; set; } = false;
     public bool _enableColorChanges { get; set; } = true;
     public bool _enableShakes { get; set; } = true;
@@ -420,6 +425,7 @@ public class RBSongPlayerConfig
     public bool _enableLaser { get; set; } = true;
     public bool _flipShakeDirectionOnColorChange { get; set; } = true;
     public bool _enableBGColor { get; set; } = true;
+    public bool _brightenShipOnShoot { get; set; } = true;
     public double _flashTimeCubeShipMs { get; set; } = .05;
     public double _waveSpeedMultiplier { get; set; } = 20;
     public double _playfieldSize { get; set; } = -1;
