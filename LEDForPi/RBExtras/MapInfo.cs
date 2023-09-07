@@ -1,4 +1,4 @@
-namespace LEDForPi;
+namespace LEDForPi.RBExtras;
 
 [Serializable]
 public class MapInfo

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LEDForPi.RBExtras;
 
 [Serializable]
 public class MapDifficulty

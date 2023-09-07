@@ -1,12 +1,14 @@
 using System.IO.Compression;
 using ComputerUtils.FileManaging;
+using LEDForPi.RBExtras;
+using LEDForPi.Strips;
 
 namespace LEDForPi;
 
 public class Utils
 {
 
-    public static int LocationToLEDIndex(float location, StripWrapper stripWrapper)
+    public static int LocationToLEDIndex(float location, VirtualStrip stripWrapper)
     {
         if (RBSongPlayerConfig.flipped)
         {

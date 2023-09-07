@@ -1,5 +1,7 @@
 using System;
 
+namespace LEDForPi.RBExtras;
+
 [Serializable]
 public class TargetData
 {

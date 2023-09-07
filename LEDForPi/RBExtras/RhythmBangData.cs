@@ -1,4 +1,5 @@
-namespace LEDForPi;
+
+namespace LEDForPi.RBExtras;
 
 public class DataReport
 {

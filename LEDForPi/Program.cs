@@ -9,17 +9,34 @@ using System.Text.Json;
 using ComputerUtils.Logging;
 using ComputerUtils.Webserver;
 using LEDForPi;
+using LEDForPi.RBExtras;
+using LEDForPi.Strips;
 using NetCoreAudio;
 using rpi_ws281x;
-using Color = LEDForPi.Color;
+using Color = LEDForPi.RBExtras.Color;
 
-StripWrapper w = new StripWrapper();
-w.Init(120, Pin.Gpio21);
+//StripWrapper w = new StripWrapper();
+//w.Init(120, Pin.Gpio21);
+
+Logger.displayLogInConsole = true;
+VirtualStrip v = new VirtualStrip();
+v.Init(new List<StripRepresentation>()
+{
+    new StripRepresentation()
+    {
+        isVirtual = false,
+        pin = Pin.Gpio21,
+        ledCount = 120,
+        ledStart = 0
+    }
+});
 
 Player p = new Player();
 p.Play("audio.wav");
 
-Logger.displayLogInConsole = true;
+StripControllerManager manager = new StripControllerManager();
+manager.StartUpdateThread();
+
 RBSongPlayerConfig.Load();
 SongManager.LoadAllMaps();
 
@@ -28,43 +45,52 @@ server.logRequests = false;
 server.AddWSRoute("/", request =>
 {
     DataReport r = JsonSerializer.Deserialize<DataReport>(request.bodyString);
+    if(RBSongPlayer.mostRecentStripController == null) return;
     switch (r.type)
     {
         case DataType.UPDATE:
-            RBSongPlayer.SetSongTime(r.time);
-            RBSongPlayer.SetShipPos(r.shipPos);
-            RBSongPlayer.SetSpeed(r.speed);
+            RBSongPlayer.mostRecentStripController.SetSongTime(r.time);
+            RBSongPlayer.mostRecentStripController.SetShipPos(r.shipPos);
+            RBSongPlayer.mostRecentStripController.SetSpeed(r.speed);
             break;
         case DataType.LASER_SHOT:
-            RBSongPlayer.LaserShot();
+            RBSongPlayer.mostRecentStripController.LaserShot();
             break;
         case DataType.TARGET_HIT:
-            RBSongPlayer.TargetHit(r.targetIndex);
+            RBSongPlayer.mostRecentStripController.TargetHit(r.targetIndex);
             break;
     }
 });
 server.AddWSRoute("/strip", request =>
 {
     Dictionary<int, Color> colors = new Dictionary<int, Color>();
-    foreach (int led in w.displayedColors.Keys.OrderBy(x => x))
+    foreach (int led in v.displayedColors.Keys.OrderBy(x => x))
     {
-        colors.Add(led, new Color(w.displayedColors[led].R / 255f, w.displayedColors[led].G / 255f, w.displayedColors[led].B / 255f));
+        colors.Add(led, new Color(v.displayedColors[led].R / 255f, v.displayedColors[led].G / 255f, v.displayedColors[led].B / 255f));
     }
-    request.SendString(JsonSerializer.Serialize(colors));
+    request.SendString(JsonSerializer.Serialize(new StripInfo()
+    {
+        colors = colors,
+        time = RBSongPlayer.mostRecentStripController.elapsedSeconds,
+        songId = RBSongPlayer.songId
+    }));
 });
 server.AddWSRoute("/status", request =>
 {
     SongPlayStatus s = new SongPlayStatus();
-    s.songTime = RBSongPlayer.elapsedSeconds;
-    s.speed = RBSongPlayer.speed;
+    s.songTime = RBSongPlayer.mostRecentStripController.elapsedSeconds;
+    s.speed = RBSongPlayer.mostRecentStripController.speed;
     s.currentSongId = RBSongPlayer.currentSongId;
     request.SendString(JsonSerializer.Serialize(s));
 });
 server.AddRoute("POST", "/map", request =>
 {
+    // Used by RB Game to start game
     request.SendString("");
     RBSongPlayer.useGame = true;
-    RBSongPlayer.PlaySong(w, JsonSerializer.Deserialize<MapDifficulty>(request.bodyString));
+    RBStripController c = new RBStripController();
+    c.InitSong(v, JsonSerializer.Deserialize<MapDifficulty>(request.bodyString));
+    manager.AddController(c);
     return true;
 });
 server.AddRoute("POST", "/info", request =>
@@ -75,7 +101,7 @@ server.AddRoute("POST", "/info", request =>
 });
 server.AddRoute("GET", "/strip", request =>
 {
-    request.SendString(JsonSerializer.Serialize(w.displayedColors));
+    request.SendString(JsonSerializer.Serialize(v.displayedColors));
     return true;
 });
 server.AddRoute("GET", "/configjson", request =>
@@ -123,14 +149,18 @@ server.AddRoute("GET", "/replays/", request =>
 }, true);
 server.AddRoute("POST", "/playsong", request =>
 {
+    // Used by Web UI to play song
     request.SendString("Playing");
     SongPlayRequest r = JsonSerializer.Deserialize<SongPlayRequest>(request.bodyString);
     RBSongPlayer.info = SongManager.GetSongFromLibraryBasedOnId(r.songId);
+    RBSongPlayer.songId = r.songId;
     
     RBSongPlayer.useGame = false;
 
     RBSongPlayer.replay = SongManager.LoadReplay(RBSongPlayer.info, r.replay);
-    RBSongPlayer.PlaySong(w, SongManager.LoadDifficulty(RBSongPlayer.info, r.diffName));
+    RBStripController c = new RBStripController();
+    c.InitSong(v, SongManager.LoadDifficulty(RBSongPlayer.info, r.diffName));
+    manager.AddController(c);
     return true;
 });
 server.AddRoute("GET", "/audio/", request =>
@@ -142,3 +172,10 @@ server.AddRouteFile("/view", "view.html", false, true, true);
 server.AddRouteFile("/", "index.html", false, true, true);
 server.AddRouteFile("/config", "config.html", false, true, true);
 server.StartServer(14007);
+
+public class StripInfo
+{
+    public Dictionary<int, Color> colors { get; set; } = new Dictionary<int, Color>();
+    public double time { get; set; } = 0f;
+    public string songId { get; set; } = "";
+}

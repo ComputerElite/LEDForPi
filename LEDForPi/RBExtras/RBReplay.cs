@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.Json;
 using LEDForPi;
 
+namespace LEDForPi.RBExtras;
+
 [Serializable]
 public enum RBReplayVersion
 {
@@ -76,9 +78,9 @@ public class RBReplay
     {
         for(int i = 0; i < frames.Count; i++)
         {
-            if (RBSongPlayer.elapsedSeconds >= frames[i].t)
+            if (RBSongPlayer.mostRecentStripController.elapsedSeconds >= frames[i].t)
             {
-                RBSongPlayer.SetShipPos(frames[i].p);
+                RBSongPlayer.mostRecentStripController.SetShipPos(frames[i].p);
                 frames.RemoveAt(i);
                 i--;
             } else
@@ -89,9 +91,9 @@ public class RBReplay
 
         for (int i = 0; i < shootTimes.Count; i++)
         {
-            if (RBSongPlayer.elapsedSeconds >= shootTimes[i])
+            if (RBSongPlayer.mostRecentStripController.elapsedSeconds >= shootTimes[i])
             {
-                RBSongPlayer.LaserShot();
+                RBSongPlayer.mostRecentStripController.LaserShot();
                 shootTimes.RemoveAt(i);
                 i--;
             } else
@@ -103,15 +105,15 @@ public class RBReplay
 
 	public void PlayFirstFrame()
 	{
-		RBSongPlayer.SetShipPos(frames[0].p);
+		RBSongPlayer.mostRecentStripController.SetShipPos(frames[0].p);
         if (gameplayModifiers.faster)
         {
-            RBSongPlayer.SetSpeed(1.25f);
+            RBSongPlayer.mostRecentStripController.SetSpeed(1.25f);
         } else if (gameplayModifiers.slower)
         {
-            RBSongPlayer.SetSpeed(.75f);
+            RBSongPlayer.mostRecentStripController.SetSpeed(.75f);
         } else {
-            RBSongPlayer.SetSpeed(1f);
+            RBSongPlayer.mostRecentStripController.SetSpeed(1f);
             
         }
 	}

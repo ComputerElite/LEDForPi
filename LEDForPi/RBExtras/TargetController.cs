@@ -1,7 +1,8 @@
 using System.Numerics;
 using ComputerUtils.Logging;
+using LEDForPi.Strips;
 
-namespace LEDForPi;
+namespace LEDForPi.RBExtras;
 
 public class TargetController
 {
@@ -10,7 +11,7 @@ public class TargetController
     public float instantiateTime;
     public int mySongPlayId = 0;
     public bool missed = false;
-    public TargetController(TargetData d, float songTime, int songPlayId)
+    public TargetController(TargetData d, float songTime, int songPlayId, RBStripController controller)
     {
         data = d;
         mySongPlayId = songPlayId;
@@ -18,7 +19,7 @@ public class TargetController
         shakeIntensity = data.power / 10f;
         shakeSpeed = data.height;
 
-        if (data.type == TargetType.COLORCHANGE && RBSongPlayerConfig.flipShakeDirectionOnColorChange) RBSongPlayer.waveDirection *= -1;
+        if (data.type == TargetType.COLORCHANGE && RBSongPlayerConfig.flipShakeDirectionOnColorChange) controller.waveDirection *= -1;
     }
 
     float sharedSamplingPoint = 0;
@@ -33,7 +34,7 @@ public class TargetController
     /// Does everything to display the LED
     /// </summary>
     /// <returns>Whether to destroy this controller or not</returns>
-    public bool Update(float songTime, StripWrapper stripWrapper, int currentSuggestedLED)
+    public bool Update(float songTime, VirtualStrip stripWrapper, int currentSuggestedLED, RBStripController controller)
     {
         if(mySongPlayId != RBSongPlayer.currentSongId) return true;
         
@@ -45,14 +46,14 @@ public class TargetController
         {
             if (!RBSongPlayerConfig.enableFlashes)
             {
-                RBSongPlayer.actualColor = RBSongPlayer.currentBgColor;
+                controller.actualColor = controller.currentBgColor;
                 return false;
             }
             if (progress < 0) return false;
             progress = 1 - progress;
             double alpha = Math.Pow(progress, 5);
             if (alpha > 1) alpha = 1;
-            RBSongPlayer.actualColor = Color.Lerp(RBSongPlayer.currentBgColor, RBSongPlayer.currentColor, Convert.ToSingle(alpha));
+            controller.actualColor = Color.Lerp(controller.currentBgColor, controller.currentColor, Convert.ToSingle(alpha));
             return false;
         }
         // Handle Color change target type
@@ -63,23 +64,23 @@ public class TargetController
             Color newColorBg = data.power == -2 ? new Color(.13f, 0f, .02f) : RBSongPlayer.info.bgColors[data.power / 2];
             if (progress >= 1)
             {
-                RBSongPlayer.lastColor = newColor;
-                RBSongPlayer.currentColor = newColor;
-                RBSongPlayer.lastBgColor = newColorBg;
-                RBSongPlayer.currentBgColor = newColorBg;
+                controller.lastColor = newColor;
+                controller.currentColor = newColor;
+                controller.lastBgColor = newColorBg;
+                controller.currentBgColor = newColorBg;
                 return true;
             }
             if (progress < 0) return false;
             float blend = CodeAnimationHelpers.EaseInOutCurve(progress);
-            RBSongPlayer.currentColor = Color.Lerp(RBSongPlayer.lastColor, newColor, blend);
-            RBSongPlayer.currentBgColor = Color.Lerp(RBSongPlayer.lastBgColor, newColorBg, blend);
+            controller.currentColor = Color.Lerp(controller.lastColor, newColor, blend);
+            controller.currentBgColor = Color.Lerp(controller.lastBgColor, newColorBg, blend);
             return false;
         }
         if(data.type == TargetType.SHAKE)
         {
             if (!RBSongPlayerConfig.enableShakes)
             {
-                RBSongPlayer.waveIntensity = 0f;
+                controller.waveIntensity = 0f;
                 return false;
             }
             if (progress < 0) return false;
@@ -91,13 +92,13 @@ public class TargetController
             // intensity between 100 and 1000
             float currentIntensity = (1f - CodeAnimationHelpers.EaseOutCurve(progress));
 
-            RBSongPlayer.waveIntensity = currentIntensity;
+            controller.waveIntensity = currentIntensity;
             // shake speed 0 - 100
-            RBSongPlayer.waveoffset += RBSongPlayer.deltaTime * shakeSpeed * RBSongPlayerConfig.waveSpeedMultiplier * RBSongPlayer.waveDirection;
+            controller.waveoffset += controller.deltaTime * shakeSpeed * RBSongPlayerConfig.waveSpeedMultiplier * controller.waveDirection;
             return false;
         }
         if (data.type != TargetType.NORMAL) return true;
-        if (RBSongPlayer.hitTargets.Contains(data.index)) return true;
+        if (controller.hitTargets.Contains(data.index)) return true;
         
         if (progress > 1)
         {
@@ -113,14 +114,14 @@ public class TargetController
                 if (RBSongPlayer.replay == null)
                 {
                     // On Auto play we obviously hit
-                    RBSongPlayer.LaserShot(true);
+                    controller.LaserShot(true);
                     laserSpawned = true;
                     return true;
                 }
                 else
                 {
                     RBReplayTarget t = RBSongPlayer.replay.GetCubeData(data);
-                    RBSongPlayer.LaserShot(true);
+                    controller.LaserShot(true);
                     laserSpawned = true;
                     if (t.h) return true;
                 }
@@ -133,7 +134,7 @@ public class TargetController
         int led = Utils.LocationToLEDIndex(data.location, stripWrapper);
         int color = 0xFFFFFF;
         // Check if we are the next target
-        bool anythingEarlier = RBSongPlayer.controllers.Where(x => !x.missed && x.data.type == TargetType.NORMAL).Any(x => x.data.index != data.index && x.data.time < data.time);
+        bool anythingEarlier = controller.controllers.Where(x => !x.missed && x.data.type == TargetType.NORMAL).Any(x => x.data.index != data.index && x.data.time < data.time);
         if (!anythingEarlier)
         {
             color = 0x00EEFF;
@@ -147,7 +148,7 @@ public class TargetController
 
         double brightness = Math.Clamp(1 - Math.Pow(progress, data.power), 0, 1);
         brightness *= brightness;
-        if (led == Utils.LocationToLEDIndex(RBSongPlayer.shipLocation, stripWrapper) && RBSongPlayerConfig.enableShip)
+        if (led == Utils.LocationToLEDIndex(controller.shipLocation, stripWrapper) && RBSongPlayerConfig.enableShip)
         {
             if (songTime % RBSongPlayerConfig.flashTimeCubeShipMs < RBSongPlayerConfig.flashTimeCubeShipMs / 2)
                 stripWrapper.SetLED(led, currentSuggestedLED == led ? 0xFF00FF : color, brightness);

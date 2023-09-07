@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using ComputerUtils.FileManaging;
 using ComputerUtils.Logging;
+using LEDForPi.RBExtras;
 
 namespace LEDForPi;
 
