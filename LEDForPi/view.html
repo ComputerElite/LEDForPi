@@ -20,7 +20,7 @@
 <body>
 <div id="top" style="top: 0; left: 0; flex-direction: row;" class="absolute"></div>
 <script>
-    const height = 50
+    const height = 100
     var ws = new WebSocket(`ws://${location.host}/strip`)
     ws.onmessage = e => {
         ws.send("gimme")
