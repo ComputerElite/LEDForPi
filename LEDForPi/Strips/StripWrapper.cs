@@ -1,4 +1,5 @@
 using System.Drawing;
+using LEDForPi.RBExtras;
 using rpi_ws281x;
 
 namespace LEDForPi.Strips;
@@ -45,7 +46,7 @@ public class StripWrapper : IStrip
         //Use 16 LEDs and GPIO Pin 18.
         //Set brightness to maximum (255)
         //Use Unknown as strip type. Then the type will be set in the native assembly.
-        controller = settings.AddController(leds, pin, StripType.WS2812_STRIP, ControllerType.Unknown, 255, false);
+        controller = settings.AddController(leds, pin, RBSongPlayerConfig.useSK6812W ? StripType.SK6812W_STRIP : StripType.WS2812_STRIP, ControllerType.Unknown, 255, false);
         rpi = new WS281x(settings);
     }
     
@@ -67,21 +68,21 @@ public class StripWrapper : IStrip
     public void SetLED(int ledId, int rgb, double brightness)
     {
         System.Drawing.Color c = GetColorFromRGB(rgb);
-        c = System.Drawing.Color.FromArgb((int)Math.Round(c.R * brightness), (int)Math.Round(c.G * brightness), (int)Math.Round(c.B * brightness));
+        c = System.Drawing.Color.FromArgb(0, (int)Math.Round(c.R * brightness), (int)Math.Round(c.G * brightness), (int)Math.Round(c.B * brightness));
         colors[ledId] = c;
         if(!isVirtual) controller.SetLED(ledId, c);
     }
     
     public void SetLED(int ledId, System.Drawing.Color color, double brightness)
     {
-        System.Drawing.Color c = System.Drawing.Color.FromArgb((int)Math.Round(color.R * brightness), (int)Math.Round(color.G * brightness), (int)Math.Round(color.B * brightness));
+        System.Drawing.Color c = System.Drawing.Color.FromArgb(0, (int)Math.Round(color.R * brightness), (int)Math.Round(color.G * brightness), (int)Math.Round(color.B * brightness));
         colors[ledId] = c;
         if(!isVirtual) controller.SetLED(ledId, c);
     }
 
     public System.Drawing.Color GetColorFromRGB(int rgb)
     {
-        return System.Drawing.Color.FromArgb((rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff);
+        return System.Drawing.Color.FromArgb(0, (rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb >> 0) & 0xff);
     }
 
     public void SetAllLED(int rgb)
@@ -103,5 +104,13 @@ public class StripWrapper : IStrip
     public void SetLEDBrightness(int i, double brightness)
     {
         SetLED(i, colors[i], brightness);
+    }
+
+    public long lastRender = 0;
+    public void RenderOncePerFrame(long currentFrame)
+    {
+        if (lastRender == currentFrame) return;
+        lastRender = currentFrame;
+        Render();
     }
 }

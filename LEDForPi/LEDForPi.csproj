@@ -27,6 +27,9 @@
       <None Update="index.html">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="normal.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

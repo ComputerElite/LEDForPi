@@ -99,6 +99,11 @@ public class RBSongPlayerConfig
         get => instance._brightenShipOnShoot;
         set => instance._brightenShipOnShoot = value;
     }
+    public static bool useSK6812W
+    {
+        get => instance._useSK6812W;
+        set => instance._useSK6812W = value;
+    }
     public bool _flipped { get; set; } = false;
     public bool _enableColorChanges { get; set; } = true;
     public bool _enableShakes { get; set; } = true;
@@ -113,6 +118,7 @@ public class RBSongPlayerConfig
     public double _waveSpeedMultiplier { get; set; } = 20;
     public double _playfieldSize { get; set; } = -1;
     public double _playfieldStartLEDIndex { get; set; } = 0;
+    public bool _useSK6812W { get; set; } = true;
     
     public static void Save()
     {

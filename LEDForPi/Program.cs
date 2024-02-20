@@ -18,6 +18,7 @@ using Color = LEDForPi.RBExtras.Color;
 //StripWrapper w = new StripWrapper();
 //w.Init(120, Pin.Gpio21);
 
+RBSongPlayerConfig.Load();
 Logger.displayLogInConsole = true;
 VirtualStrip v = new VirtualStrip();
 v.Init(new List<StripRepresentation>()
@@ -26,7 +27,7 @@ v.Init(new List<StripRepresentation>()
     {
         isVirtual = false,
         pin = Pin.Gpio21,
-        ledCount = 120,
+        ledCount = RBSongPlayerConfig.playfieldSize,
         ledStart = 0
     }
 });
@@ -37,7 +38,6 @@ p.Play("audio.wav");
 StripControllerManager manager = new StripControllerManager();
 manager.StartUpdateThread();
 
-RBSongPlayerConfig.Load();
 SongManager.LoadAllMaps();
 
 HttpServer server = new HttpServer();
@@ -113,6 +113,16 @@ server.AddRoute("POST", "/configjson", request =>
 {
     RBSongPlayerConfig.instance = JsonSerializer.Deserialize<RBSongPlayerConfig>(request.bodyString);
     RBSongPlayerConfig.Save();
+    v.Init(new List<StripRepresentation>()
+    {
+        new StripRepresentation()
+        {
+            isVirtual = false,
+            pin = Pin.Gpio21,
+            ledCount = RBSongPlayerConfig.playfieldSize,
+            ledStart = 0
+        }
+    });
     request.SendString(JsonSerializer.Serialize(RBSongPlayerConfig.instance));
     return true;
 });
@@ -168,12 +178,59 @@ server.AddRoute("GET", "/audio/", request =>
     request.SendData(SongManager.GetAudioFile(request.pathDiff), HttpServer.GetContentTpe(SongManager.GetSongFromLibraryBasedOnId(request.pathDiff).songFileName));
     return true;
 }, true, true, true);
+
+server.AddRoute("GET", "/audio/", request =>
+{
+    request.SendData(SongManager.GetAudioFile(request.pathDiff), HttpServer.GetContentTpe(SongManager.GetSongFromLibraryBasedOnId(request.pathDiff).songFileName));
+    return true;
+}, true, true, true);
+server.AddRoute("GET", "/api/animations", request =>
+{
+    request.SendString(JsonSerializer.Serialize(Animation.GetAnimations()), "application/json");
+    return true;
+});
+server.AddRoute("POST", "/api/setanimation", request =>
+{
+    switch (request.bodyString)
+    {
+        case Animation.RainbowFade:
+            manager.AddController(new RainbowController(v).SetID("normal"));
+            break;
+        case Animation.RainbowStatic:
+            manager.AddController(new RainbowStaticController(v).SetID("normal"));
+            break;
+        case Animation.Static:
+            manager.AddController(new StaticController(v).SetID("normal"));
+            break;
+    }
+    request.SendString("Set animation to " + request.bodyString);
+    return true;
+});
+server.AddRoute("POST", "/api/setstep", request =>
+{
+    AnimationSettings.step = double.Parse(request.bodyString);
+    request.SendString("Set animation to " + request.bodyString);
+    return true;
+});
+server.AddRoute("POST", "/api/setcolor0", request =>
+{
+    AnimationSettings.color0 = int.Parse(request.bodyString);
+    request.SendString("Set color0 to " + request.bodyString);
+    return true;
+});
+server.AddRoute("POST", "/api/setbrightness", request =>
+{
+    AnimationSettings.brightness = double.Parse(request.bodyString);
+    request.SendString("Set brightness to " + request.bodyString);
+    return true;
+});
 server.AddRouteFile("/view", "view.html", false, true, true);
 server.AddRouteFile("/", "index.html", false, true, true);
+server.AddRouteFile("/normal", "normal.html", false, true, true);
 server.AddRouteFile("/config", "config.html", false, true, true);
 server.StartServer(14007);
 
-public class StripInfo
+public class StripInfo 
 {
     public Dictionary<int, Color> colors { get; set; } = new Dictionary<int, Color>();
     public double time { get; set; } = 0f;

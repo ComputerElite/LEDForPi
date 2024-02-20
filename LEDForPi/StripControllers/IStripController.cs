@@ -1,7 +1,13 @@
+using LEDForPi.Strips;
+
 namespace LEDForPi;
 
 public interface IStripController
 {
+    /// <summary>
+    /// Strip this controller controlls
+    /// </summary>
+    public List<IStrip> GetStrips();
     /// <summary>
     /// Will be called every frame update where the controller is enabled. Use this to update the LED strip.
     /// </summary>
@@ -24,5 +30,5 @@ public interface IStripController
     public void SetStripControllerManager(StripControllerManager manager);
     
     public string GetID();
-    public void SetID(string id);
+    public IStripController SetID(string id);
 }

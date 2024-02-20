@@ -22,4 +22,9 @@ public interface IStrip
     public void Render();
 
     public void SetLEDBrightness(int i, double brightness);
+    /// <summary>
+    /// Only render if the frame hasn't been rendered yet
+    /// </summary>
+    /// <param name="currentFrame"></param>
+    void RenderOncePerFrame(long currentFrame);
 }

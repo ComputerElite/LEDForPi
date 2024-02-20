@@ -1,14 +1,12 @@
-using System.Reflection.Metadata;
-using ComputerUtils.Logging;
 using LEDForPi.Strips;
 
 namespace LEDForPi;
 
-public class RainbowController : BasicStripController, IStripController
+public class RainbowStaticController : BasicStripController, IStripController
 {
     VirtualStrip w = new();
 
-    public RainbowController(VirtualStrip w)
+    public RainbowStaticController(VirtualStrip w)
     {
         this.w = w;
     }
@@ -25,10 +23,7 @@ public class RainbowController : BasicStripController, IStripController
 
     public void Update()
     {
-        for(int i=0; i<w.LEDCount; i++) { 
-            double pixelHue = AnimationSettings.hue + (i * 720.0 / w.LEDCount);
-            w.SetLED(i, ColorUtils.HsvToRgb(pixelHue, 1, 1));
-        }
+        w.SetAllLED(ColorUtils.HsvToRgb(AnimationSettings.hue, 1, 1));
 
         AnimationSettings.hue += manager.deltaTime * (AnimationSettings.step / 10.0);
         AnimationSettings.hue %= 360;

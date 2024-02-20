@@ -1,11 +1,15 @@
 using ComputerUtils.Logging;
+using LEDForPi.Strips;
 
 namespace LEDForPi;
 
 public class StripControllerManager
 {
+    public double deltaTime = 0.01;
+    private DateTime lastUpdate = DateTime.Now;
     public List<IStripController> controllers = new();
     public Dictionary<string, bool> enabledControllers = new();
+    public long currentFrame = 0;
 
     /// <summary>
     /// Adds a strip controller to the manager. They'll be enabled by default. The strip controller must be initialised already with strip information.
@@ -21,8 +25,8 @@ public class StripControllerManager
         Destroy(controller.GetID()); // Destroy existing controllers with the same ID
         enabledControllers[controller.GetID()] = true;
         controllers.Add(controller);
-        controller.OnEnable();
         controller.SetStripControllerManager(this);
+        controller.OnEnable();
     }
 
     public void EnableController(string id)
@@ -43,12 +47,26 @@ public class StripControllerManager
 
     public void UpdateControllers()
     {
+        DateTime now = DateTime.Now;
+        deltaTime = (now - lastUpdate).TotalSeconds;
+        lastUpdate = now;
+        currentFrame++;
         try
         {
+            List<IStrip> strips = new List<IStrip>();
             for(int i = 0; i < controllers.Count; i++)
             {
-                if(enabledControllers.ContainsKey(controllers[i].GetID()) && enabledControllers[controllers[i].GetID()])
+                if (enabledControllers.ContainsKey(controllers[i].GetID()) &&
+                    enabledControllers[controllers[i].GetID()])
+                {
                     controllers[i].Update();
+                    strips.AddRange(controllers[i].GetStrips());
+                }
+            }
+
+            for (int i = 0; i < strips.Count; i++)
+            {
+                strips[i].RenderOncePerFrame(currentFrame);
             }
         } catch(Exception e)
         {
@@ -77,5 +95,13 @@ public class StripControllerManager
             }
         });
         t.Start();
+    }
+
+    public void JustMe(IStripController rainbowController)
+    {
+        foreach (IStripController strip in controllers)
+        {
+            if(strip.GetID() != rainbowController.GetID()) DisableController(strip.GetID());
+        }
     }
 }

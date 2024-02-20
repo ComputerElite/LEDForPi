@@ -51,6 +51,11 @@ public class RBStripController : BasicStripController, IStripController
     {
         speed = s;
     }
+    
+    public List<IStrip> GetStrips()
+    {
+        return new List<IStrip> {w};
+    }
 
     public void LaserShot(bool instaRender = false)
     {
@@ -325,7 +330,6 @@ public class RBStripController : BasicStripController, IStripController
                 //Logger.Log(fps.Average() + " FPS");
                 fps.Clear();
             }
-            w.Render();
             if (controllers.Count <= 0 && map.targets.Count <= 0)
             {
                 manager.Destroy(this);

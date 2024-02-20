@@ -14,6 +14,11 @@ public class VirtualStrip : IStrip
     public void Init(List<StripRepresentation> strips)
     {
         int count = 0;
+        LEDCount = 0;
+        this.strips.Clear();
+        colors.Clear();
+        displayedColors.Clear();
+        ledToStrip.Clear();
         foreach (StripRepresentation stripRepresentation in strips)
         {
             StripWrapper strip = new();
@@ -52,8 +57,7 @@ public class VirtualStrip : IStrip
 
     public void SetLED(int ledId, int rgb)
     {
-        System.Drawing.Color c = GetColorFromRGB(rgb);
-        colors[ledId] = c;
+        SetLED(ledId, rgb, 1);
     }
     public void SetLED(int ledId, int rgb, double brightness)
     {
@@ -110,6 +114,14 @@ public class VirtualStrip : IStrip
     public void SetLEDBrightness(int i, double brightness)
     {
         SetLED(i, colors[i], brightness);
+    }
+
+    public long lastRender = 0;
+    public void RenderOncePerFrame(long currentFrame)
+    {
+        if (lastRender == currentFrame) return;
+        lastRender = currentFrame;
+        Render();
     }
 }
 

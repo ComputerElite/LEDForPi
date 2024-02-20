@@ -32,3 +32,4 @@
 /home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/view.html
 /home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/config.html
 /home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/index.html
+/home/computerelite/rider/LEDForPi/LEDForPi/bin/Debug/net7.0/normal.html

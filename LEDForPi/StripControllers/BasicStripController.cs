@@ -1,4 +1,5 @@
 using ComputerUtils.Logging;
+using LEDForPi.Strips;
 
 namespace LEDForPi;
 
@@ -7,6 +8,11 @@ public class BasicStripController : IStripController
     private bool enabled { get; set; } = true;
     public StripControllerManager manager { get; set; }
     private string id { get; set; } = "";
+    public List<IStrip> GetStrips()
+    {
+        throw new NotImplementedException();
+    }
+
     public void Update()
     {
         Logger.Log("BasicStripController Update");
@@ -37,8 +43,9 @@ public class BasicStripController : IStripController
         return id;
     }
 
-    public void SetID(string id)
+    public IStripController SetID(string id)
     {
         this.id = id;
+        return this;
     }
 }
