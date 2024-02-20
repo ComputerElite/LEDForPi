@@ -65,8 +65,8 @@ public class StripControllerManager
                 if (enabledControllers.ContainsKey(controllers[i].GetID()) &&
                     enabledControllers[controllers[i].GetID()])
                 {
-                    controllers[i].Update();
                     strips.AddRange(controllers[i].GetStrips());
+                    controllers[i].Update(); // Controller may remove itself here
                 }
             }
 
