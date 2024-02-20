@@ -15,7 +15,7 @@ public class RBSongPlayer
     
     public static string songId = "";
 
-    public static RBStripController mostRecentStripController;
+    public static RBStripController mostRecentStripController = new RBStripController();
     
     
 

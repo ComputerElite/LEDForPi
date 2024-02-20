@@ -59,7 +59,7 @@ public class Color
     {
         get
         {
-            return ToInt().ToString("X");
+            return ToInt().ToString("X6");
         }
     }
     
@@ -89,7 +89,7 @@ public class Color
 
     public int ToInt()
     {
-        return (int)(r * 255) * 0x10000 + (int)(g * 255) * 0x100 + (int)(b * 255);
+        return ((int)(r * 255) << 16) + ((int)(g * 255) << 8) + (int)(b * 255);
     }
 
     public override string ToString()

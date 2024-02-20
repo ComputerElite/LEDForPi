@@ -7,7 +7,7 @@ public class StripControllerManager
 {
     public double deltaTime = 0.01;
     private DateTime lastUpdate = DateTime.Now;
-    public List<IStripController> controllers = new();
+    public List<IStripController?> controllers = new();
     public Dictionary<string, bool> enabledControllers = new();
     public long currentFrame = 0;
 
@@ -56,6 +56,12 @@ public class StripControllerManager
             List<IStrip> strips = new List<IStrip>();
             for(int i = 0; i < controllers.Count; i++)
             {
+                if (controllers[i] == null)
+                {
+                    controllers.RemoveAt(i);
+                    i--;
+                    continue;
+                }
                 if (enabledControllers.ContainsKey(controllers[i].GetID()) &&
                     enabledControllers[controllers[i].GetID()])
                 {
