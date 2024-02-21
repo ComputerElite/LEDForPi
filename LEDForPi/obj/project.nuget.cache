@@ -1,19 +1,22 @@
 {
   "version": 2,
-  "dgSpecHash": "DUurot7sJGSkTdL16+yRCtqWmZCwtud2jh2szEhABFzklsoHjjLEn6Sohm/7GdpbmqOoR1S/T5C+b9/iT225QQ==",
+  "dgSpecHash": "KokfQvyV2wmHsWrbq0epq2pOD877Rvq1pGk0RWhKc08mERhLDgtNV5zM0NjPEqBgjVucv4GZaP3Tad0CpUCV9g==",
   "success": true,
-  "projectFilePath": "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj",
+  "projectFilePath": "/workspaces/LEDForPi/LEDForPi/LEDForPi.csproj",
   "expectedPackageFiles": [
-    "/home/computerelite/.nuget/packages/aforge/2.2.5/aforge.2.2.5.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/aforge.video/2.2.5/aforge.video.2.2.5.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/aforge.video.directshow/2.2.5/aforge.video.directshow.2.2.5.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/kenssamson.rpi-ws281x-csharp/1.1.0/kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/mimetypemapofficial/1.0.17/mimetypemapofficial.1.0.17.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/netcoreaudio/1.7.0/netcoreaudio.1.7.0.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/qrcoder/1.4.3/qrcoder.1.4.3.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/system.device.gpio/3.0.0/system.device.gpio.3.0.0.nupkg.sha512",
-    "/home/computerelite/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512"
+    "/home/codespace/.nuget/packages/aforge/2.2.5/aforge.2.2.5.nupkg.sha512",
+    "/home/codespace/.nuget/packages/aforge.video/2.2.5/aforge.video.2.2.5.nupkg.sha512",
+    "/home/codespace/.nuget/packages/aforge.video.directshow/2.2.5/aforge.video.directshow.2.2.5.nupkg.sha512",
+    "/home/codespace/.nuget/packages/kenssamson.rpi-ws281x-csharp/1.1.0/kenssamson.rpi-ws281x-csharp.1.1.0.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "/home/codespace/.nuget/packages/mimetypemapofficial/1.0.17/mimetypemapofficial.1.0.17.nupkg.sha512",
+    "/home/codespace/.nuget/packages/netcoreaudio/1.7.0/netcoreaudio.1.7.0.nupkg.sha512",
+    "/home/codespace/.nuget/packages/qrcoder/1.4.3/qrcoder.1.4.3.nupkg.sha512",
+    "/home/codespace/.nuget/packages/system.device.gpio/3.0.0/system.device.gpio.3.0.0.nupkg.sha512",
+    "/home/codespace/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.netcore.app.ref/7.0.15/microsoft.netcore.app.ref.7.0.15.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.15/microsoft.aspnetcore.app.ref.7.0.15.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.netcore.app.host.linux-x64/7.0.15/microsoft.netcore.app.host.linux-x64.7.0.15.nupkg.sha512"
   ],
   "logs": [
     {

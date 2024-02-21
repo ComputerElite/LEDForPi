@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LEDForPi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+769110a43b5ddb51372fe2230db71cbfecdaac0a")]
 [assembly: System.Reflection.AssemblyProductAttribute("LEDForPi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LEDForPi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
