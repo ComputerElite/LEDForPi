@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+
+        html {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <input type="button" value="Import song" onclick="ImportSong()">
+    <input type="button" value="Import replay" onclick="ImportReplay()">
+    <br>
+    <br>
+
+    <input type="button" value="Stop song" onclick="Stop()">
+    <label for="lag">Audio offset</label><input type="number" value="0" id="lag">
+    <h2>Replays</h2>
+    <input type="button" value="Auto play" onclick="ReplaySelected('')">
+    <div id="replays">
+
+    </div>
+    <h2>Difficulties</h2>
+    <div id="difficulties">
+
+    </div>
+    <h2>Songs</h2>
+    <div id="songs">
+        
+    </div>
+    <iframe src="/config" style="height: 100vh;"></iframe>
+<script>
+    var selectedSong = ""
+    var selectedDifficulty = ""
+    var selectedReplay = ""
+    var songs = []
+    var replays = []
+    document.getElementById("lag").value = localStorage.getItem("lag") || 0
+    document.getElementById("lag").onchange = e => {
+        localStorage.setItem("lag", e.target.value)
+    }
+    
+    function Stop() {
+        fetch(`/stopsong`, {
+            method: "POST"
+        })
+    }
+    
+    function SelectSong(id) {
+        selectedSong = id;
+        SelectDifficulty(selectedDifficulty)
+        UpdateUI()
+    }
+    function SelectDifficulty(filename) {
+        selectedDifficulty = filename;
+        UpdateUI()
+        fetch(`/replays/${selectedSong}/${selectedDifficulty}`).then(res => res.json().then(res => {
+            replays = res
+            UpdateUI()
+        }))
+    }
+    function ReplaySelected(name) {
+        selectedReplay = name
+        UpdateUI()
+        fetch(`/playsong`, {
+            method: "POST",
+            body: JSON.stringify({
+                songId: selectedSong,
+                diffName: selectedDifficulty,
+                replay: name
+            })
+        }).then(res => {
+            setTimeout(() => {
+                LoadAndUpdateAudio();
+            }, 1000)
+        })
+    }
+    
+    function ImportSong() {
+        SendFile(".zip", "/importmap");
+    }
+    function ImportReplay() {
+        SendFile(".json", "/importreplay");
+    }
+    UpdateSongs()
+    function UpdateSongs() {
+        fetch("/songs").then(res => res.json().then(res => {
+            songs = res
+            UpdateUI()
+        }))
+    }
+    
+    
+    function LoadAndUpdateAudio() {
+        var lastUpdate = 0;
+        var delays = []
+        var audio = new Audio(`/audio/${selectedSong}`)
+        audio.load()
+        var ws = new WebSocket(`ws://${window.location.host}/status`)
+        ws.onopen = () => {
+            ws.send("gimme")
+            lastUpdate = Date.now()
+        }
+        ws.onclose = () => {
+            console.log("ws closed")
+            audio.pause();
+            audio.currentTime = 0;
+        }
+        var songId = -1
+        var playing = false
+        ws.onmessage = e => {
+            var delta = Date.now() - lastUpdate
+            delays.push(delta)
+            
+            var data = JSON.parse(e.data)
+            if(songId == -1) songId = data.currentSongId
+            if(data.currentSongId != songId) {
+                // other song playing. Stop audio and close ws
+                console.log("other song playing")
+                audio.pause();
+                audio.currentTime = 0;
+                ws.close()
+                return
+            }
+            if(delays.length > 15) delays.shift()
+            var avgDelay = (delays.reduce((a, b) => a + b, 0) / delays.length) / 2;
+            console.log("delay is " + avgDelay + " ms")
+            if(data.songTime > 0 - avgDelay / 1000 - document.getElementById("lag").value && !playing) {
+                console.log("playing")
+                audio.playbackRate = data.speed
+                audio.preservesPitch = false
+                audio.play()
+                playing = true
+            }
+            if(playing) {
+                // We don't need to update as often when we're playing
+                setTimeout(() => {
+                    ws.send("gimme")
+                }, 1000)
+            } else {
+                ws.send("gimme")
+                lastUpdate = Date.now()
+            }
+        }
+    }
+    
+    function UpdateUI() {
+        var html = "<table>"
+        for(const song of songs) {
+            html += `<tr onclick="SelectSong('${song.id}')"><td style="color: ${song.id == selectedSong ? "#FF77FF" : "#FFFFFF"};">${song.song} - ${song.artist} [${song.mapper}]</td></tr>`
+        }
+        document.getElementById("songs").innerHTML = html + "</table>"
+        
+        html = "<table>"
+        var song = songs.find(x => x.id == selectedSong)
+        if(song) {
+            for(const d of song.difficulties) {
+                html += `<tr onclick="SelectDifficulty('${d.difficultyFileName}')"><td style="color: ${d.difficultyFileName == selectedDifficulty ? "#FF77FF" : "#FFFFFF"};">${d.difficultyName}</td></tr>`
+            }
+        }
+        document.getElementById("difficulties").innerHTML = html + "</table>"
+
+        html = "<table>"
+        for(const r of replays) {
+            html += `<tr onclick="ReplaySelected('${r}')"><td style="color: ${r == selectedReplay ? "#FF77FF" : "#FFFFFF"};">${r}</td></tr>`
+        }
+        document.getElementById("replays").innerHTML = html + "</table>"
+    }
+    
+    function SendFile(extension, endpoint) {
+        // Open file input which allows selection of zip files, then uploads the raw data via POST to /importmap
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = extension;
+        fileInput.onchange = function() {
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+            reader.onload = function() {
+                var data = reader.result;
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", endpoint, true);
+                xhr.setRequestHeader("Content-Type", "application/octet-stream");
+                xhr.send(data);
+                xhr.onloadend = function() {
+                    if (xhr.status == 200) {
+                        alert("Import successful!");
+                        UpdateSongs()
+                    } else {
+                        alert("Import failed!");
+                    }
+                };
+            };
+            reader.readAsArrayBuffer(file);
+        };
+        fileInput.click();
+    }
+</script>
+</body>
+</html>

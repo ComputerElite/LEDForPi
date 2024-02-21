@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>AmbiLightViewer</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        html {
+            background-color: #000000;
+        }
+
+        .absolute {
+            position: fixed;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<div id="top" style="top: 0; left: 0; flex-direction: row;" class="absolute"></div>
+<script>
+    const height = 50
+    var ws = new WebSocket(`ws://${location.host}/strip`)
+    ws.onmessage = e => {
+        ws.send("gimme")
+        var res = JSON.parse(e.data)
+        var array = []
+        for(const [key, value] of Object.entries(res.colors).sort(x => x[0])) {
+            array.push(value)
+        }
+        Update(array)
+    }
+    ws.onopen = () => {
+        ws.send("gimme")
+    }
+    function Update(res) {
+        var topHTML = ""
+        var topWidth = 100 / res.length
+        var i = 0
+        var op = 0.6
+        res.forEach(e => {
+            i++
+            topHTML += `
+                        <div style="background-color: #${e.hex}; width: ${topWidth}vw; height: ${height}vh;">
+                        </div>
+                    
+                    `
+        })
+        document.getElementById("top").innerHTML = topHTML
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Title</title>
+    <style>
+
+        html {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        var config = {}
+        fetch("/configjson").then(res => res.json().then(res => {
+            config = res
+            UpdateUI()
+        }))
+        
+        function SetProperty(name, value) {
+            config[name] = value
+            fetch(`/configjson`, {
+                method: "POST",
+                body: JSON.stringify(config)
+            }).then(res => res.json().then(res => {
+                config = res
+                UpdateUI()
+            }))
+        }
+        
+        function UpdateUI() {
+            var html = ""
+            for(const [key, value] of Object.entries(config)) {
+                html += `
+                    <div>
+                        <label for="${key}">${key}</label>
+                        ${typeof value === "number" ? 
+                      `<input onchange="SetProperty('${key}', parseFloat(this.value))" type="number" id="${key}" value="${value}">` 
+                    : `<input onchange="SetProperty('${key}', ${!value})" type="checkbox" id="${key}" ${value ? `checked` : ``}>`}
+                        
+                    </div>
+                `
+            }
+            document.body.innerHTML = html
+        }
+    </script>
+</body>
+</html>
