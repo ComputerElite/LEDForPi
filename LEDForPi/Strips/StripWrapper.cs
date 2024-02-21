@@ -26,7 +26,9 @@ public class StripWrapper : IStrip
     public Dictionary<int, System.Drawing.Color> colors = new();
     public Dictionary<int, System.Drawing.Color> displayedColors = new();
     public bool isVirtual = false;
-
+    public bool isReversed = false;
+    
+    
     public int GetLEDCount()
     {
         return LEDCount;
@@ -59,8 +61,14 @@ public class StripWrapper : IStrip
         }
     }
 
+    public int GetLEDIdBasedOnStripProperties(int ledId)
+    {
+        return isReversed ? ledId : LEDCount - ledId;
+    }
+    
     public void SetLED(int ledId, int rgb)
     {
+        ledId = GetLEDIdBasedOnStripProperties(ledId);
         System.Drawing.Color c = GetColorFromRGB(rgb);
         colors[ledId] = c;
         if(!isVirtual) controller.SetLED(ledId, c);
@@ -75,6 +83,7 @@ public class StripWrapper : IStrip
     
     public void SetLED(int ledId, System.Drawing.Color color, double brightness)
     {
+        ledId = GetLEDIdBasedOnStripProperties(ledId);
         System.Drawing.Color c = System.Drawing.Color.FromArgb(0, (int)Math.Round(color.R * brightness), (int)Math.Round(color.G * brightness), (int)Math.Round(color.B * brightness));
         colors[ledId] = c;
         if(!isVirtual) controller.SetLED(ledId, c);
@@ -107,6 +116,7 @@ public class StripWrapper : IStrip
     }
 
     public long lastRender = 0;
+
     public void RenderOncePerFrame(long currentFrame)
     {
         if (lastRender == currentFrame) return;

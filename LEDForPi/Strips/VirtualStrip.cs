@@ -23,6 +23,7 @@ public class VirtualStrip : IStrip
         {
             StripWrapper strip = new();
             strip.isVirtual = stripRepresentation.isVirtual;
+            strip.isReversed = stripRepresentation.reversed;
             strip.Init(stripRepresentation.ledCount, stripRepresentation.pin);
             strip.LEDStartIndex = LEDCount;
             LEDCount += stripRepresentation.ledCount;
@@ -131,4 +132,5 @@ public class StripRepresentation
     public int ledCount = 0;
     public int ledStart = 0;
     public bool isVirtual = false;
+    public bool reversed = false;
 }
