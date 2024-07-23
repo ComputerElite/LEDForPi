@@ -1,6 +1,7 @@
 using ComputerUtils.Logging;
 using LEDForPi.RBExtras;
 using LEDForPi.Strips;
+using NetCoreAudio;
 
 namespace LEDForPi;
 
@@ -101,6 +102,7 @@ public class RBStripController : BasicStripController, IStripController
     {
         laserShots.Clear();
         if(RBSongPlayerConfig.playfieldSize == -1) RBSongPlayerConfig.playfieldSize = strip.LEDCount;
+        Logger.Log("Strip has " + strip.LEDCount + " leds");
         waveoffset = 0;
         waveIntensity = 0;
         orgMap = new MapDifficulty(m);
@@ -257,6 +259,7 @@ public class RBStripController : BasicStripController, IStripController
         return lerpPositionX;
     }
 
+    private bool musicStarted = false;
     public void Update()
     {
         try
@@ -268,6 +271,12 @@ public class RBStripController : BasicStripController, IStripController
                 return;
             }
             float songTime = Convert.ToSingle(elapsedSeconds);
+            if (!musicStarted && songTime + 0.1 >= 0)
+            {
+                musicStarted = true;
+                //Player p = new Player();
+                //p.Play(SongManager.GetAudioFilePath(RBSongPlayer.info));
+            }
             w.SetAllLED(RBSongPlayerConfig.enableBGColor ? actualColor.ToInt() : 0x000000); // set bg color
             // Spawn targets
             // Instantiate all song cubes to instantiate

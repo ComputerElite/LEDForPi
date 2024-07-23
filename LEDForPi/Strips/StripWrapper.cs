@@ -63,7 +63,7 @@ public class StripWrapper : IStrip
 
     public int GetLEDIdBasedOnStripProperties(int ledId)
     {
-        return isReversed ? ledId : LEDCount - ledId;
+        return isReversed ? ledId : LEDCount - 1 - ledId;
     }
     
     public void SetLED(int ledId, int rgb)

@@ -65,14 +65,14 @@ public class VirtualStrip : IStrip
         System.Drawing.Color c = GetColorFromRGB(rgb);
         c = System.Drawing.Color.FromArgb((int)Math.Round(c.R * brightness), (int)Math.Round(c.G * brightness), (int)Math.Round(c.B * brightness));
         colors[ledId] = c;
-        GetResponsibleController(ledId).SetLED(GetAdjustedLEDPosition(ledId), rgb, brightness);
+        GetResponsibleController(ledId)?.SetLED(GetAdjustedLEDPosition(ledId), rgb, brightness);
     }
     
     public void SetLED(int ledId, System.Drawing.Color color, double brightness)
     {
         System.Drawing.Color c = System.Drawing.Color.FromArgb((int)Math.Round(color.R * brightness), (int)Math.Round(color.G * brightness), (int)Math.Round(color.B * brightness));
         colors[ledId] = c;
-        GetResponsibleController(ledId).SetLED(GetAdjustedLEDPosition(ledId), color, brightness);
+        GetResponsibleController(ledId)?.SetLED(GetAdjustedLEDPosition(ledId), color, brightness);
     }
 
     public System.Drawing.Color GetColorFromRGB(int rgb)
@@ -102,9 +102,15 @@ public class VirtualStrip : IStrip
         }
     }
 
-    private StripWrapper GetResponsibleController(int i)
+    private StripWrapper? GetResponsibleController(int i)
     {
-        return strips[ledToStrip[i]];
+        int stripIndex;
+        if (!ledToStrip.TryGetValue(i, out stripIndex))
+        {
+            Logger.Log("LED id " + i + " not found.");
+            return null;
+        }
+        return strips[stripIndex];
     }
     
     int GetAdjustedLEDPosition(int i)

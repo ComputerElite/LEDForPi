@@ -27,13 +27,11 @@ v.Init(new List<StripRepresentation>()
     {
         isVirtual = false,
         pin = Pin.Gpio21,
-        ledCount = 60,
-        ledStart = 0
+        ledCount = RBSongPlayerConfig.playfieldSize,
+        ledStart = 0,
+        reversed = true
     }
 });
-
-Player p = new Player();
-//p.Play("audio.wav");
 
 StripControllerManager manager = new StripControllerManager();
 manager.StartUpdateThread();

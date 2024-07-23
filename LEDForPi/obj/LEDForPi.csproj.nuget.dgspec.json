@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/workspaces/LEDForPi/LEDForPi/LEDForPi.csproj": {}
+    "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj": {}
   },
   "projects": {
-    "/workspaces/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj": {
+    "/home/computerelite/rider/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj",
+        "projectUniqueName": "/home/computerelite/rider/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj",
         "projectName": "ComputerUtils",
-        "projectPath": "/workspaces/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj",
-        "packagesPath": "/home/codespace/.nuget/packages/",
-        "outputPath": "/workspaces/LEDForPi/ComputerUtils/ComputerUtils/obj/",
+        "projectPath": "/home/computerelite/rider/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj",
+        "packagesPath": "/home/computerelite/.nuget/packages/",
+        "outputPath": "/home/computerelite/rider/LEDForPi/ComputerUtils/ComputerUtils/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/codespace/.nuget/NuGet/NuGet.Config"
+          "/home/computerelite/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -70,36 +70,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.26, 6.0.26]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.26, 6.0.26]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.101/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/workspaces/LEDForPi/LEDForPi/LEDForPi.csproj": {
+    "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/LEDForPi/LEDForPi/LEDForPi.csproj",
+        "projectUniqueName": "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj",
         "projectName": "LEDForPi",
-        "projectPath": "/workspaces/LEDForPi/LEDForPi/LEDForPi.csproj",
-        "packagesPath": "/home/codespace/.nuget/packages/",
-        "outputPath": "/workspaces/LEDForPi/LEDForPi/obj/",
+        "projectPath": "/home/computerelite/rider/LEDForPi/LEDForPi/LEDForPi.csproj",
+        "packagesPath": "/home/computerelite/.nuget/packages/",
+        "outputPath": "/home/computerelite/rider/LEDForPi/LEDForPi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/codespace/.nuget/NuGet/NuGet.Config"
+          "/home/computerelite/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -111,8 +101,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "/workspaces/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj": {
-                "projectPath": "/workspaces/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj"
+              "/home/computerelite/rider/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj": {
+                "projectPath": "/home/computerelite/rider/LEDForPi/ComputerUtils/ComputerUtils/ComputerUtils.csproj"
               }
             }
           }
@@ -151,26 +141,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.15, 7.0.15]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[7.0.15, 7.0.15]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.15, 7.0.15]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.101/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/RuntimeIdentifierGraph.json"
         }
       }
     }

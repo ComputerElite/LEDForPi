@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LEDForPi", "LEDForPi\LEDForPi.csproj", "{7D8FAEAB-C675-4793-B2B5-994FFEFAD8B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerUtils", "ComputerUtils\ComputerUtils\ComputerUtils.csproj", "{37AD840A-5215-45A4-8F8B-AAA46F62A5BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputerUtils", "ComputerUtils\ComputerUtils\ComputerUtils.csproj", "{E7B5B5EA-9C78-40E1-A318-AA973340BDA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		{7D8FAEAB-C675-4793-B2B5-994FFEFAD8B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D8FAEAB-C675-4793-B2B5-994FFEFAD8B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D8FAEAB-C675-4793-B2B5-994FFEFAD8B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37AD840A-5215-45A4-8F8B-AAA46F62A5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37AD840A-5215-45A4-8F8B-AAA46F62A5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37AD840A-5215-45A4-8F8B-AAA46F62A5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37AD840A-5215-45A4-8F8B-AAA46F62A5BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7B5B5EA-9C78-40E1-A318-AA973340BDA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7B5B5EA-9C78-40E1-A318-AA973340BDA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7B5B5EA-9C78-40E1-A318-AA973340BDA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7B5B5EA-9C78-40E1-A318-AA973340BDA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

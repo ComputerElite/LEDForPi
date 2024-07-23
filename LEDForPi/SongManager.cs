@@ -129,7 +129,16 @@ public class SongManager
     public static byte[] GetAudioFile(MapInfo i)
     {
         if (i == null) return new byte[0];
-        return File.ReadAllBytes(Path.Join(i.folder, i.songFileName));
+        return File.ReadAllBytes(GetAudioFilePath(i));
+    }
+
+    public static string GetAudioFilePath(MapInfo i)
+    {
+        return Path.Join(i.folder, i.songFileName);
+    }
+    public static string GetAudioFilePath(string songId)
+    {
+        return GetAudioFilePath(GetSongFromLibraryBasedOnId(songId));
     }
 
     public static List<string> GetReplays(string songId, string diff)
